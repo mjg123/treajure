@@ -4,8 +4,8 @@ A Clojure Project
 
 ## Usage
 
-lein deps # if it's the first time
-lein ring server-headless 8080
+    lein deps # if it's the first time
+    lein ring server-headless 8080
 
 ## License
 
