@@ -8,8 +8,8 @@
                  [ring/ring-devel "0.3.8"]
                  [ring/ring-jetty-adapter "0.3.8"]]
   :dev-dependencies [[lein-ring "0.4.5"]
-                     [lein-midje "1.0.0"]
-                     [midje "1.1.1"]]
+                     [lein-midje "1.0.3"]
+                     [midje "1.2.0"]]
   :resources-path "resources"
 
   :ring {:handler cljprj.rest/app})
