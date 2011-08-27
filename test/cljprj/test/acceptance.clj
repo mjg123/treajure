@@ -5,10 +5,24 @@
 
 (def base-url (get (System/getenv) "BASE_URL" "http://localhost:8080"))
 
-(defn good-project [id]
-  {:name (str "Test project " id)
-   :group-id (str "cljprj-test-group-id-" id)
-   :artifact-id (str "cljprj-test-artifact-id-" id)})
+;;;;; CLJPRJ-driver
+
+(defn clear-project [prj]
+  (drv/DELETE (str "/api/projects/" (prj :group-id) "/" (prj :artifact-id))))
+
+(def used-projects (atom #{}))
+
+(defn make-project [id]
+  (let [new-project {:name (str "Test project " id)
+                     :group-id (str "cljprj-test-group-id-" id)
+                     :artifact-id (str "cljprj-test-artifact-id-" id)}]
+    (clear-project new-project)
+    (swap! used-projects conj new-project)
+    new-project))
+
+(defn clear-all-used-projects []
+  (doall (map clear-project @used-projects))
+  (reset! used-projects #{}))
 
 (def accept-clj (drv/header "accept" "application/clojure"))
 (def accept-json (drv/header "accept" "application/json"))
@@ -24,10 +38,14 @@
     (drv/body (json/json-str project) "application/json")))
 
 
+;;;; TESTS
+
 (facts "cljprj acceptance tests"
 
   (println (str "Using base url of " base-url))
   (drv/set-base-url! base-url)
+
+  (clear-all-used-projects)
 
   (fact "Ping pongs"
     (let [{status :status body :body} (drv/GET "/ping")]
@@ -38,7 +56,7 @@
       [status body] => [404 "404. Problem?"]))
 
   (fact "Can upload a project and retrieve it again as application/clojure"
-    (let [project (good-project 1)
+    (let [project (make-project 1)
           {upload-status :status {new-location :location} :headers} (add-project-clj project)
           {get-status :status body-str :body} (drv/GET new-location accept-clj)
           body (read-string body-str)]
@@ -49,8 +67,10 @@
       (body :group-id) => (project :group-id)
       (body :artifact-id) => (project :artifact-id)))
 
+  (clear-all-used-projects)
+
   (fact "Can upload a project and retrieve it again as application/json"
-    (let [project (good-project 2)
+    (let [project (make-project 2)
           {upload-status :status {new-location :location} :headers} (add-project-json project)
           {get-status :status body-str :body} (drv/GET new-location accept-json)
           body (json/read-json body-str)]
@@ -61,24 +81,26 @@
       (body :group-id) => (project :group-id)
       (body :artifact-id) => (project :artifact-id)))
 
+  (clear-all-used-projects)
+
   (fact "Malformed project uploads fail - body"
     (let [{status :status} (drv/PUT "/api/projects")]
       status => 400))
 
   (fact "Malformed project uploads fail - name is mandatory"
-    (let [{status :status} (add-project-clj (dissoc (good-project "xx") :name))]
+    (let [{status :status} (add-project-clj (dissoc (make-project "xx") :name))]
       status => 400))
 
   (fact "Malformed project uploads fail - group-id is mandatory"
-    (let [{status :status} (add-project-clj (dissoc (good-project "xx") :group-id))]
+    (let [{status :status} (add-project-clj (dissoc (make-project "xx") :group-id))]
       status => 400))
 
   (fact "Malformed project uploads fail - artifact-id is mandatory"
-    (let [{status :status} (add-project-clj (dissoc (good-project "xx") :artifact-id))]
+    (let [{status :status} (add-project-clj (dissoc (make-project "xx") :artifact-id))]
       status => 400))
 
   (fact "DELETE a project after upload means you can't GET it any more (or DELETE it)"
-    (let [project (good-project 3)
+    (let [project (make-project 3)
           {upload-status :status {new-location :location} :headers} (add-project-clj project)
           {get-status :status} (drv/GET new-location accept-clj)]
 
@@ -92,7 +114,7 @@
         get-status => 404
 
         (let [{redelete-status :status} (drv/DELETE new-location)]
-        
+
           redelete-status => 404))))
 
-    )
+  (clear-all-used-projects))
