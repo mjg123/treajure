@@ -14,7 +14,7 @@
     (complete req
       {:body {:simple "Object" :with {:nested "map" :and [:a :long :list]}}}))
 
-  (route/not-found "Problem?"))
+  (route/not-found "404. Problem?"))
 
 (def app
   (->
