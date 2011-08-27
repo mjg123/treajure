@@ -1,22 +1,18 @@
 (ns cljprj.rest
   (:use compojure.core)
   (:use cljprj.multi-complete)
-  (:use ring.middleware.stacktrace)
   (:require
     [compojure.route :as route]
-    [compojure.handler :as handler]))
+    [cljprj.core :as core]))
 
 (defroutes cljprj-routes
   (GET "/ping" [] "pong")
-  (GET "/error" [] {:status 500 :body "Oh NOES!"})
 
-  (GET "/debug" [:as req]
-    (complete req
-      {:body {:simple "Object" :with {:nested "map" :and [:a :long :list]}}}))
+  (PUT "/api/projects" [:as req]
+    (complete req (core/add-project (req-body req))))
+
+  (GET "/api/projects/:group-id/:artifact-id" [group-id artifact-id :as req]
+    (complete req (core/get-project group-id artifact-id)))
+
 
   (route/not-found "404. Problem?"))
-
-(def app
-  (->
-    (handler/site cljprj-routes)
-    (wrap-stacktrace)))
