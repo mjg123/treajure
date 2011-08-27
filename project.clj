@@ -13,5 +13,5 @@
                      [midje "1.2.0"]]
   :resources-path "resources"
 
-  :ring {:handler cljprj.rest/app})
+  :ring {:handler cljprj.web/app})
 

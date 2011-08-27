@@ -14,7 +14,7 @@
 (let [config (split-mongo-url (get (System/getenv) "MONGOHQ_URL" default-mongo-connection))]
   (mongo! :db (:db config) :host (:host config) :port (Integer. (:port config)))
   (authenticate (:user config) (:pass config))
-  (add-index! :projects [:coords]))
+  (add-index! :projects [:coords-idx]))
 
 
 
@@ -22,6 +22,6 @@
   (insert! :projects project-data))
 
 (defn get-project [coords]
-  (let [result (fetch-one :projects :where {:coords coords})]
+  (let [result (fetch-one :projects :where {:coords-idx coords})]
     (:project result)))
 

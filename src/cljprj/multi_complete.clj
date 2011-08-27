@@ -32,4 +32,5 @@
   
     (condp = (keyword content-type)
       :application/clojure (read-string (slurp body-stream))
-      :application/json   (json/read-json (slurp body-stream)))))
+      :application/json   (json/read-json (slurp body-stream))
+      (slurp body-stream))))
