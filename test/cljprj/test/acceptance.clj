@@ -5,8 +5,10 @@
 
 (def base-url (get (System/getenv) "BASE_URL" "http://localhost:8080"))
 
-(def good-project-1 {:name "Test project 1" :group-id "cljprj-test-group-id-1" :artifact-id "cljprj-test-artifact-id-1"})
-(def good-project-2 {:name "Test project 2" :group-id "cljprj-test-group-id-2" :artifact-id "cljprj-test-artifact-id-2"})
+(defn good-project [id]
+  {:name (str "Test project " id)
+   :group-id (str "cljprj-test-group-id-" id)
+   :artifact-id (str "cljprj-test-artifact-id-" id)})
 
 (def accept-clj (drv/header "accept" "application/clojure"))
 (def accept-json (drv/header "accept" "application/json"))
@@ -14,12 +16,13 @@
 (defn add-project-clj [project]
   (drv/PUT
     "/api/projects"
-    (drv/body project "application/clojure")))
+    (drv/body (pr-str project) "application/clojure")))
 
 (defn add-project-json [project]
   (drv/PUT
     "/api/projects"
-    (drv/body project "application/json")))
+    (drv/body (json/json-str project) "application/json")))
+
 
 (facts "cljprj acceptance tests"
 
@@ -35,39 +38,61 @@
       [status body] => [404 "404. Problem?"]))
 
   (fact "Can upload a project and retrieve it again as application/clojure"
-    (let [{upload-status :status {new-location :location} :headers} (add-project-clj (pr-str good-project-1))
+    (let [project (good-project 1)
+          {upload-status :status {new-location :location} :headers} (add-project-clj project)
           {get-status :status body-str :body} (drv/GET new-location accept-clj)
           body (read-string body-str)]
 
       upload-status => 201
       get-status => 200
-      (body :name) => (good-project-1 :name)
-      (body :group-id) => (good-project-1 :group-id)
-      (body :artifact-id) => (good-project-1 :artifact-id)))
+      (body :name) => (project :name)
+      (body :group-id) => (project :group-id)
+      (body :artifact-id) => (project :artifact-id)))
 
   (fact "Can upload a project and retrieve it again as application/json"
-    (let [{upload-status :status {new-location :location} :headers} (add-project-json (json/json-str good-project-2))
+    (let [project (good-project 2)
+          {upload-status :status {new-location :location} :headers} (add-project-json project)
           {get-status :status body-str :body} (drv/GET new-location accept-json)
           body (json/read-json body-str)]
 
       upload-status => 201
       get-status => 200
-      (body :name) => (good-project-2 :name)
-      (body :group-id) => (good-project-2 :group-id)
-      (body :artifact-id) => (good-project-2 :artifact-id)))
+      (body :name) => (project :name)
+      (body :group-id) => (project :group-id)
+      (body :artifact-id) => (project :artifact-id)))
 
   (fact "Malformed project uploads fail - body"
     (let [{status :status} (drv/PUT "/api/projects")]
       status => 400))
 
   (fact "Malformed project uploads fail - name is mandatory"
-    (let [{status :status} (add-project-clj (pr-str (dissoc good-project-1 :name)))]
+    (let [{status :status} (add-project-clj (dissoc (good-project "xx") :name))]
       status => 400))
 
   (fact "Malformed project uploads fail - group-id is mandatory"
-    (let [{status :status} (add-project-clj (pr-str (dissoc good-project-1 :group-id)))]
+    (let [{status :status} (add-project-clj (dissoc (good-project "xx") :group-id))]
       status => 400))
 
   (fact "Malformed project uploads fail - artifact-id is mandatory"
-    (let [{status :status} (add-project-clj (pr-str (dissoc good-project-1 :artifact-id)))]
-      status => 400)))
+    (let [{status :status} (add-project-clj (dissoc (good-project "xx") :artifact-id))]
+      status => 400))
+
+  (fact "DELETE a project after upload means you can't GET it any more (or DELETE it)"
+    (let [project (good-project 3)
+          {upload-status :status {new-location :location} :headers} (add-project-clj project)
+          {get-status :status} (drv/GET new-location accept-clj)]
+
+      upload-status => 201
+      get-status => 200
+
+      (let [{delete-status :status} (drv/DELETE new-location)
+            {get-status :status} (drv/GET new-location accept-clj)]
+
+        delete-status => 204
+        get-status => 404
+
+        (let [{redelete-status :status} (drv/DELETE new-location)]
+        
+          redelete-status => 404))))
+
+    )

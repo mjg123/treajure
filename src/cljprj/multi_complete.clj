@@ -6,18 +6,23 @@
 (defn- extract-accept-header [req _]
   (keyword (get-in req [:headers "accept"])))
 
+(defn write-with [f body]
+  (if (nil? body)
+    ""
+    (f body)))
+
 (defmulti complete extract-accept-header)
 
 (defmethod complete :application/json [_ {:keys [status headers body]}]
   {:status status
    :headers (assoc headers "content-type" "application/json")
-   :body (json/json-str body)})
+   :body (write-with json/json-str body)})
 
 
 (defmethod complete :application/clojure [_ {:keys [status headers body]}]
   {:status status
    :headers (assoc headers "content-type" "application/clojure")
-   :body (pr-str body)})
+   :body (write-with pr-str body)})
 
 
 (defmethod complete :default [_ {:keys [status headers body]}]
@@ -29,8 +34,8 @@
 (defn req-body [req]
   (let [body-stream (req :body)
         content-type ((req :headers) "content-type")]
-  
+
     (condp = (keyword content-type)
       :application/clojure (read-string (slurp body-stream))
-      :application/json   (json/read-json (slurp body-stream))
+      :application/json (json/read-json (slurp body-stream))
       (slurp body-stream))))

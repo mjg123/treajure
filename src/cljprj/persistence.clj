@@ -25,3 +25,8 @@
   (let [result (fetch-one :projects :where {:coords-idx coords})]
     (:project result)))
 
+(defn rm-project [coords]
+  (let [result (fetch-one :projects :where {:coords-idx coords})]
+    (when (not (nil? result))
+      (destroy! :projects result))
+    result))

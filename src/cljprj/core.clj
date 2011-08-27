@@ -26,10 +26,21 @@
       (db/add-project {:project prj :coords-idx (prj-coords prj)})
       {:status 201
        :headers {"location" (make-location prj)}
-       :body "yum, thanks"})
+       :body {:message "yum, thanks"}})
     {:status 400
      :body {:error "uploaded project must have at least [:name :group-id :artifact-id]"}}))
 
+
+(def no-such-project {:status 404 :body {:error "No such project"}})
+
 (defn get-project [gid aid]
   (let [result (db/get-project (coords gid aid))]
-    {:body result}))
+    (if result
+      {:body result}
+      no-such-project)))
+
+(defn rm-project [gid aid]
+  (let [result (db/rm-project (coords gid aid))]
+    (if result
+      {:status 204 :body nil}
+      no-such-project)))
