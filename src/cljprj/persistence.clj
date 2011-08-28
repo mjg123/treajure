@@ -30,3 +30,6 @@
     (when (not (nil? result))
       (destroy! :projects result))
     result))
+
+(defn list-projects []
+  (map :project (fetch :projects)))

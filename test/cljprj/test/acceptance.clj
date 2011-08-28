@@ -20,7 +20,7 @@
     (swap! used-projects conj new-project)
     new-project))
 
-(defn clear-all-used-projects []
+(defn clear-all-used-projects! []
   (doall (map clear-project @used-projects))
   (reset! used-projects #{}))
 
@@ -45,7 +45,7 @@
   (println (str "Using base url of " base-url))
   (drv/set-base-url! base-url)
 
-  (clear-all-used-projects)
+  (clear-all-used-projects!)
 
   (fact "Ping pongs"
     (let [{status :status body :body} (drv/GET "/ping")]
@@ -67,7 +67,7 @@
       (body :group-id) => (project :group-id)
       (body :artifact-id) => (project :artifact-id)))
 
-  (clear-all-used-projects)
+  (clear-all-used-projects!)
 
   (fact "Can upload a project and retrieve it again as application/json"
     (let [project (make-project 2)
@@ -81,7 +81,7 @@
       (body :group-id) => (project :group-id)
       (body :artifact-id) => (project :artifact-id)))
 
-  (clear-all-used-projects)
+  (clear-all-used-projects!)
 
   (fact "Malformed project uploads fail - body"
     (let [{status :status} (drv/PUT "/api/projects")]
@@ -117,4 +117,52 @@
 
           redelete-status => 404))))
 
-  (clear-all-used-projects))
+  (fact "we can GET a list of all projects - even if it's an empty list"
+    (clear-all-used-projects!)
+    (let [{status :status body-str :body} (drv/GET "/api/projects" accept-clj)
+          {results :results} (read-string body-str)]
+      status => 200
+      results => []))
+
+  (fact "we can GET a list of all projects - with one item"
+    (clear-all-used-projects!)
+    (let [project (make-project "one")
+          _ (add-project-clj project)
+          {status :status body-str :body} (drv/GET "/api/projects" accept-clj)
+          {results :results} (read-string body-str)
+          result (first results)]
+      status => 200
+      (result :name) => (project :name)))
+
+  (fact "we can GET a list of all projects - with more than one item"
+    (clear-all-used-projects!)
+    (add-project-clj (make-project "one"))
+    (add-project-clj (make-project "two"))
+    (add-project-clj (make-project "th3"))
+
+    (let [{status :status body-str :body} (drv/GET "/api/projects" accept-clj)
+          {results :results} (read-string body-str)]
+      status => 200
+      (count results) => 3))
+
+
+  (fact "Projects in the list of projects have an href which points at their page"
+    (clear-all-used-projects!)
+
+    (let [project (make-project "one")
+          _ (add-project-clj project)
+          {status :status body-str :body} (drv/GET "/api/projects" accept-clj)
+          {results :results} (read-string body-str)
+          {href :href} (first results)]
+
+      status => 200
+      (nil? href) => false
+
+      (let [{get-status :status body :body} (drv/GET href accept-json)
+            prj-body (json/read-json body)]
+
+        get-status => 200
+        (project :name) => (prj-body :name)
+        (prj-body :href) => nil)))
+
+  (clear-all-used-projects!))

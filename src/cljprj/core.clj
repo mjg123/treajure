@@ -44,3 +44,10 @@
     (if result
       {:status 204 :body nil}
       no-such-project)))
+
+(defn attach-href [prj]
+  (assoc prj :href (make-location prj)))
+
+(defn list-projects []
+  (let [results (db/list-projects)]
+    {:body {:results (map attach-href (reverse results))}}))

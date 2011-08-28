@@ -8,6 +8,9 @@
 (defroutes cljprj-routes
   (GET "/ping" [:as req] "pong")
 
+  (GET "/api/projects" [:as req]
+    (complete req (core/list-projects)))
+
   (PUT "/api/projects" [:as req]
     (complete req (core/add-project (req-body req))))
 
