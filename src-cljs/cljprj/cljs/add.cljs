@@ -10,7 +10,7 @@
 
 (defn log [msg]
   (let [old-content (.innerHTML log-elem)]
-    (set! (.innerHTML log-elem) (str (pr-str [(. (date/DateTime.) (toIsoString)) msg]) "<br/>" old-content))))
+    (set! (.innerHTML log-elem) (str "user=> " (pr-str [(. (date/DateTime.) (toIsoString)) msg]) "<br/>" old-content))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; GENERAL BUSINESS
