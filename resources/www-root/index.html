@@ -51,13 +51,13 @@
         <input id="add-source-url"/>
     </div>
     <div class="add-form-row">
-        <h3><label for="add-readme-text" class="keyword">:readme-text</label></h3>
-        <input id="add-readme-text"/>
+        <h3><label for="add-tags" class="keyword">:tags</label></h3><span id="hanging-bracket">[</span><input
+            id="add-tags"/> ]
+        <div class="add-field-explanation">;; tags whitespace-separated</div>
     </div>
     <div class="add-form-row">
-        <h3><label for="add-tags" class="keyword">:tags</label></h3><span id="hanging-bracket">[</span><input
-            id="add-tags"/> ] } )
-        <div class="add-field-explanation">;; tags whitespace-separated</div>
+        <h3><label for="add-readme-text" class="keyword">:readme-text</label></h3>
+        <textarea rows="4" cols="256" class="add-input" id="add-readme-text"></textarea>  } )
     </div>
 
     <div class="add-form-row">
@@ -67,6 +67,9 @@
     </div>
 </div>
 
+<div id="log" class="content-box">
+    ?
+</div>
 
 <script type="text/javascript" src="js/treajure.js"></script>
 </body>

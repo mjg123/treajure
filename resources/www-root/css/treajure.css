@@ -21,6 +21,11 @@ input {
   width: 200px;
 }
 
+.add-input {
+  border: 1px solid #080;
+  width: 200px;
+}
+
 input:focus {
   background-color: #EFD;
 }
@@ -45,6 +50,7 @@ input:focus {
 div.content-box {
   border: 1px solid #0A0;
   padding: 4px;
+  margin-bottom: 4px;
 }
 
 div.add-form-row {
@@ -71,4 +77,9 @@ div.add-field-explanation {
   font-weight: bold;
   color: #626;
   padding-left: 32px;
+}
+
+#log {
+  font-family: courier;
+  font-size: small;
 }
