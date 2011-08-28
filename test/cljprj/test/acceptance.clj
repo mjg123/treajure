@@ -6,7 +6,7 @@
 
 (def base-url (get (System/getenv) "BASE_URL" "http://localhost:8080"))
 
-;;;; TESTS
+;;;; TESTS - NB these currently assume mongo to be EMPTY before you start
 
 (facts "cljprj acceptance tests"
 
@@ -132,5 +132,17 @@
         get-status => 200
         (project :name) => (prj-body :name)
         (prj-body :href) => nil)))
+
+  (fact "Projects data items are constrained"
+    (clear-all-used-projects!)
+    (let [project (assoc (make-full-project "five") :no-good-extra "WHATEVERS")
+          {upload-status :status {new-location :location} :headers} (add-project-clj project)
+          {get-status :status body-str :body} (drv/GET new-location accept-clj)
+          body (read-string body-str)]
+
+      upload-status => 201
+      get-status => 200
+
+      (keys body) => (in-any-order (keys (make-full-project "five")))))
 
   (clear-all-used-projects!))

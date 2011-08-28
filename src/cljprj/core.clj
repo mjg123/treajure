@@ -10,6 +10,11 @@
     (contains? prj-data :group-id)
     (contains? prj-data :artifact-id)))
 
+(defn clean-project
+  "Removes unwanted fields from the project"
+  [prj]
+  (select-keys prj [:name :author :group-id :artifact-id :latest-version :source-url :readme-text :tags]))
+
 (defn make-location-url
   "Makes the URL for a single project"
   [prj]
@@ -26,7 +31,7 @@
 
 (defn add-project [prj]
   (if (valid-project? prj)
-    (do
+    (let [prj (clean-project prj)]
       (db/add-project {:project prj :coords-idx (prj-coords prj)})
       {:status 201
        :headers {"location" (make-location-url prj)}

@@ -21,6 +21,18 @@
     (swap! used-projects conj new-project)
     new-project))
 
+(defn make-full-project
+  "Creates a new project for upload with valid entries for all fields"
+  [id]
+  (let [new-project (make-project id)]
+    (assoc new-project
+      :author "Matthew"
+      :latest-version "1.0.0"
+      :source-url "http://mjg123.github.com"
+      :readme-text "This is some text for a readme"
+      :tags ["tag1" "tag2" "tag3"])))
+
+
 (defn clear-all-used-projects!
   "Calls clear-project for all projects we've uploaded"
   []
