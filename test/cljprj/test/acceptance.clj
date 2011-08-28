@@ -1,42 +1,10 @@
 (ns cljprj.test.acceptance
-  (:use [midje.sweet])
+  (:use [midje.sweet]
+        [cljprj.test.cljprj-driver])
   (:require [cljprj.test.rest-driver.rest-driver :as drv]
             [clojure.contrib.json :as json]))
 
 (def base-url (get (System/getenv) "BASE_URL" "http://localhost:8080"))
-
-;;;;; CLJPRJ-driver
-
-(defn clear-project [prj]
-  (drv/DELETE (str "/api/projects/" (prj :group-id) "/" (prj :artifact-id))))
-
-(def used-projects (atom #{}))
-
-(defn make-project [id]
-  (let [new-project {:name (str "Test project " id)
-                     :group-id (str "cljprj-test-group-id-" id)
-                     :artifact-id (str "cljprj-test-artifact-id-" id)}]
-    (clear-project new-project)
-    (swap! used-projects conj new-project)
-    new-project))
-
-(defn clear-all-used-projects! []
-  (doall (map clear-project @used-projects))
-  (reset! used-projects #{}))
-
-(def accept-clj (drv/header "accept" "application/clojure"))
-(def accept-json (drv/header "accept" "application/json"))
-
-(defn add-project-clj [project]
-  (drv/PUT
-    "/api/projects"
-    (drv/body (pr-str project) "application/clojure")))
-
-(defn add-project-json [project]
-  (drv/PUT
-    "/api/projects"
-    (drv/body (json/json-str project) "application/json")))
-
 
 ;;;; TESTS
 
