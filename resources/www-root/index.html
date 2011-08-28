@@ -1,10 +1,73 @@
 <html>
 <head>
     <title>TREAJURE</title>
+    <link rel="stylesheet" href="css/reset.css" type="text/css">
+    <link rel="stylesheet" href="css/treajure.css" type="text/css">
 </head>
 <body>
 
-  Some treajure awaits!
+<h1>trea<span class="clj-j">j</span>ure</h1>
 
+<br/>
+
+<div id="add-project" class="content-box">
+
+    <h3>(<span class="fn">ns</span> treajure.add-a-project)</h3>
+
+    <br/>
+
+    <div class="add-form-row">
+        <h3>(<span class="fn">def</span> project {</h3>
+    </div>
+
+    <div class="add-form-row">
+        <h3><label for="add-name" class="keyword">:name</label></h3>
+        <input id="add-name"/>
+    </div>
+    <div class="add-form-row">
+        <h3><label for="add-group-id" class="keyword">:group-id</label></h3>
+        <input id="add-group-id"/>
+
+        <div class="add-field-explanation">;; The binary dependency is specified uniquely by :group-id ...</div>
+    </div>
+    <div class="add-form-row">
+        <h3><label for="add-artifact-id" class="keyword">:artifact-id</label></h3>
+        <input id="add-artifact-id"/>
+
+        <div class="add-field-explanation">;; ... :artifact-id ...</div>
+    </div>
+    <div class="add-form-row">
+        <h3><label for="add-latest-version" class="keyword">:latest-version</label></h3>
+        <input id="add-latest-version"/>
+
+        <div class="add-field-explanation">;; ... and :latest-version</div>
+    </div>
+    <div class="add-form-row">
+        <h3><label for="add-author" class="keyword">:author</label></h3>
+        <input id="add-author"/>
+    </div>
+    <div class="add-form-row">
+        <h3><label for="add-source-url" class="keyword">:source-url</label></h3>
+        <input id="add-source-url"/>
+    </div>
+    <div class="add-form-row">
+        <h3><label for="add-readme-text" class="keyword">:readme-text</label></h3>
+        <input id="add-readme-text"/>
+    </div>
+    <div class="add-form-row">
+        <h3><label for="add-tags" class="keyword">:tags</label></h3><span id="hanging-bracket">[</span><input
+            id="add-tags"/> ] } )
+        <div class="add-field-explanation">;; tags whitespace-separated</div>
+    </div>
+
+    <div class="add-form-row">
+        (<span class="fn">when</span> (<span class="fn">ready?</span> you)
+        <input type="button" id="add-submit" value="(add project)"/>
+        )
+    </div>
+</div>
+
+
+<script type="text/javascript" src="js/treajure.js"></script>
 </body>
 </html>
