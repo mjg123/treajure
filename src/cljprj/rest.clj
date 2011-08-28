@@ -20,5 +20,5 @@
   (DELETE "/api/projects/:group-id/:artifact-id" [group-id artifact-id :as req]
     (complete req (core/rm-project group-id artifact-id)))
 
-
+  (route/files "/" {:root "resources/www-root"})
   (route/not-found "404. Problem?"))
