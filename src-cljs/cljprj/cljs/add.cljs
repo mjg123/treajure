@@ -74,6 +74,7 @@
     (set-html "show-readme-text" (prj :readme-text))))
 
 (defn load-individual-project-from [location]
+  (log (str "Loading from " location))
   (xhr/send location load-callback "GET" nil ajacs-headers))
 
 ;;;;;;;;; UPLOAD A NEW PROJECT BUSINESS
@@ -86,7 +87,7 @@
        "add-latest-version" "add-source-url" "add-readme-text" "add-tags"])))
 
 (defn project-upload-success [new-locn]
-  ;  (clear-add-form)
+  (clear-add-form)
   (load-individual-project-from new-locn))
 
 (defn submit-callback [e]
@@ -130,7 +131,7 @@
 (defn make-result-dom [prj]
   (let [div (dom/createDom "div" "find-projects-item")]
     (events/listen div "click" #(load-individual-project-from (prj :href)))
-  
+
     (.appendChild div (dom/createDom "span" {} "{ "))
     (.appendChild div (dom/createDom "span" "keyword" ":name "))
     (.appendChild div (dom/createDom "span" {} (prj :name)))
