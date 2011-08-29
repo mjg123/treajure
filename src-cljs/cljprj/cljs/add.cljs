@@ -37,7 +37,7 @@
   [type message]
   ;; at the moment, just log to the error thingy
   (condp = type
-    :error (log [:error message])
+    :error ((js* "alert") (str "Error: " message))
     (log [:unknown message])))
 
 (defn un-xhr [e]
