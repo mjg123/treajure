@@ -3,7 +3,9 @@
             [goog.dom :as dom]
             [goog.date :as date]
             [goog.events :as events]
-            [goog.net.XhrIo :as xhr]))
+            [goog.Uri :as uri]
+            [goog.net.XhrIo :as xhr]
+            [clojure.string :as s]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; DEBUG BUSINESS
 
@@ -17,15 +19,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;; GENERAL BUSINESS
 
 (defn dom-val [elem-id]
-  (.value (dom/getElement elem-id)))
+  (s/trim (.value (dom/getElement elem-id))))
 
 (defn clear-elem [elem-id]
   (set! (.value (dom/getElement elem-id)) ""))
 
 (defn set-html [elem-id val]
   (set! (.innerHTML (dom/getElement elem-id)) val))
-
-(def whitespace-regex (js* "/\\s+/"))
 
 (def ajacs-headers
   (doto (js-obj)
@@ -45,6 +45,16 @@
     {:status (. resp (getStatus))
      :body (reader/read-string (. resp (getResponseText)))
      :headers (. resp (getAllResponseHeaders))}))
+
+(defn add-uri-parameter [uri p-name p-val]
+  (if (not= "" p-val)
+    (.setParameterValue uri p-name p-val)
+    uri))
+
+(defn add-uri-parameters [uri p-name p-vals]
+  (if (seq p-vals)
+    (.setParameterValues uri p-name (apply array p-vals))
+    uri))
 
 ;;;;;;;;; SHOW AN INDIVIDUAL PROJECT BUSINESS
 
@@ -85,8 +95,8 @@
 
     (condp = (resp :status)
       201 (project-upload-success location)
-      400 (msg :error (str "Upload failed: " (get-in resp [:body :error])))
-      (msg :error (str "Unexpected problem with upload" (get-in resp [:body :error]))))))
+      400 (msg :error (str "Send failed: " (get-in resp [:body :error])))
+      (msg :error (str "Unexpected problem with send" (get-in resp [:body :error]))))))
 
 (defn project-from-form []
   {:name (dom-val "add-name")
@@ -96,18 +106,51 @@
    :latest-version (dom-val "add-latest-version")
    :source-url (dom-val "add-source-url")
    :readme-text (dom-val "add-readme-text")
-   :tags (apply vector (.split (dom-val "add-tags") whitespace-regex))})
+   :tags (apply vector (s/split (dom-val "add-tags") #"\\s+"))})
 
 (defn submit-event []
   (xhr/send "/api/projects" submit-callback "PUT" (pr-str (project-from-form)) ajacs-headers))
+
+
+;;;;;;;;;;;;;;;;;; GET SEARCH RESULTS BUSINESS
+
+(defn clear-search-results! []
+  (set-html "find-projects-results" ""))
+
+(defn get-search-params []
+  {:name (dom-val "search-name")
+   :tags (apply vector (s/split (dom-val "search-tags") #"\\s+"))
+   :sort (dom-val "search-sort")})
+
+(defn make-search-url [search-params]
+  (-> (goog.Uri. "/api/projects")
+    (add-uri-parameter "name" (search-params :name))
+    (add-uri-parameters "tag" (search-params :tags))
+    ))
+
+(defn show-results-callback [e]
+  (let [resp (un-xhr e)]
+    (log resp)))
+
+(defn do-search []
+  (clear-search-results!)
+  (let [search-params (get-search-params)
+        search-url (make-search-url search-params)]
+    (log (str "Searching with " search-url))
+    (xhr/send search-url show-results-callback "GET" nil ajacs-headers)))
 
 
 ;;;;;;;;;;;;;;;;;; START THE APP (BUSINESS)
 
 (defn start-app []
   (log :startup)
+
   (events/listen (dom/getElement "add-submit")
     "click"
-    submit-event))
+    submit-event)
+
+  (events/listen (dom/getElement "search-submit")
+    "click"
+    do-search))
 
 (start-app)

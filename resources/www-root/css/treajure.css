@@ -45,16 +45,9 @@ h3 {
     vertical-align: top;
 }
 
-#add-submit {
-  border: none;
-  background-color: inherit;
-  font-size: inherit;
-  display: inline-block;
-  width: inherit;
-}
-
-#add-submit:hover {
- background: #DFD;
+.fake-link:hover {
+  background: #DFD;
+  cursor: pointer;
 }
 
 div.content-box {
