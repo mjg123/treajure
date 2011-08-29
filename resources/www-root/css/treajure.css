@@ -39,6 +39,11 @@ input:focus {
     vertical-align: top;
 }
 
+.show-label {
+    width: 150px;
+    vertical-align: top;
+}
+
 #add-submit {
   border: none;
   background-color: inherit;
@@ -60,7 +65,13 @@ div.content-box {
 div.add-form-row {
   margin-top: 4px;
   padding-left: 8px;
-    display: table;
+  display: table;
+}
+
+div.show-project-row {
+  margin-top: 4px;
+  padding-left: 8px;
+  display: table;
 }
 
 div.add-field-explanation {

@@ -31,4 +31,6 @@
     (valid-project? (assoc min-prj :artifact-id "")) => false)
 
 
+;;;; TODO - keys should be trimmed before check
+
   )

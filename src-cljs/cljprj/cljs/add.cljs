@@ -22,9 +22,12 @@
 (defn clear-elem [elem-id]
   (set! (.value (dom/getElement elem-id)) ""))
 
+(defn set-html [elem-id val]
+  (set! (.innerHTML (dom/getElement elem-id)) val))
+
 (def whitespace-regex (js* "/\\s+/"))
 
-(def upload-headers
+(def ajacs-headers
   (doto (js-obj)
     (aset "Content-Type" "application/clojure")
     (aset "Accept" "application/clojure")))
@@ -37,11 +40,31 @@
     :error (log [:error message])
     (log [:unknown message])))
 
+(defn un-xhr [e]
+  (let [resp (aget e "target")]
+    {:status (. resp (getStatus))
+     :body (reader/read-string (. resp (getResponseText)))
+     :headers (. resp (getAllResponseHeaders))}))
+
 ;;;;;;;;; SHOW AN INDIVIDUAL PROJECT BUSINESS
 
-(defn load-individual-project-from [locn]
-  (log (str "Loading from " locn)))
+(defn load-callback [e]
+  (let [resp (un-xhr e)
+        prj (resp :body)]
 
+    (log (pr-str (apply str (interpose " " (prj :tags)))))
+
+    (set-html "show-name" (prj :name))
+    (set-html "show-group-id" (prj :group-id))
+    (set-html "show-artifact-id" (prj :artifact-id))
+    (set-html "show-latest-version" (prj :latest-version))
+    (set-html "show-author" (prj :author))
+    (set-html "show-source-url" (prj :source-url))
+    (set-html "show-tags" (str "[" (apply str (interpose " " (prj :tags))) "]"))
+    (set-html "show-readme-text" (prj :readme-text))))
+
+(defn load-individual-project-from [location]
+  (xhr/send location load-callback "GET" nil ajacs-headers))
 
 ;;;;;;;;; UPLOAD A NEW PROJECT BUSINESS
 
@@ -53,19 +76,17 @@
        "add-latest-version" "add-source-url" "add-readme-text" "add-tags"])))
 
 (defn project-upload-success [new-locn]
-  (clear-add-form)
+  ;  (clear-add-form)
   (load-individual-project-from new-locn))
 
 (defn submit-callback [e]
-  (let [resp (aget e "target")
-        status (. resp (getStatus))
-        body (reader/read-string (. resp (getResponseText)))
-        location (.getResponseHeader resp "location")]
+  (let [resp (un-xhr e)
+        location (.getResponseHeader (aget e "target") "location")] ;; TODO un-xhr should take care of this.  It's a capitalization problem I think.
 
-    (condp = status
+    (condp = (resp :status)
       201 (project-upload-success location)
-      400 (msg :error (str "Upload failed: " (body :error)))
-      (msg :error (str "Unexpected problem with upload" (body :error))))))
+      400 (msg :error (str "Upload failed: " (get-in resp [:body :error])))
+      (msg :error (str "Unexpected problem with upload" (get-in resp [:body :error]))))))
 
 (defn project-from-form []
   {:name (dom-val "add-name")
@@ -78,7 +99,7 @@
    :tags (apply vector (.split (dom-val "add-tags") whitespace-regex))})
 
 (defn submit-event []
-  (xhr/send "/api/projects" submit-callback "PUT" (pr-str (project-from-form)) upload-headers))
+  (xhr/send "/api/projects" submit-callback "PUT" (pr-str (project-from-form)) ajacs-headers))
 
 
 ;;;;;;;;;;;;;;;;;; START THE APP (BUSINESS)
