@@ -20,7 +20,7 @@
     (reduce
       #(assoc %1 (first %2)
          (if (string? (second %2))
-           (trim (second %2))
+           (trim (.replaceAll (second %2) "\"" "'"))
            (second %2)))
       {}
       only-valid-fields)))
@@ -75,4 +75,4 @@ As get is always by gid/aid we just need those two things."
 
 (defn list-projects []
   (let [results (db/list-projects)]
-    {:body {:results (map attach-href (reverse results))}}))
+    {:body {:results (apply vector (map attach-href (reverse results)))}}))

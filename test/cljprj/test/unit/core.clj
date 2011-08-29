@@ -41,6 +41,9 @@
   (fact "whitespace is trimmed"
     ((clean-project (assoc min-prj :name "   hello   ")) :name) => "hello")
 
+  (fact "double-quotes are changed to single-quotes" ; to work around a bug in clojurescript's read-string
+    ((clean-project (assoc min-prj :name "say \"ahh\"")) :name) => "say 'ahh'")
+
   (fact "unwanted properties are removed"
     (contains? (clean-project (assoc min-prj :HAHAHA "   hello   ")) :HAHAHA) => false)
 
