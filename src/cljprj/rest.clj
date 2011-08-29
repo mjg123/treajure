@@ -18,9 +18,7 @@
 
   (GET ["/api/projects/:group-id/:artifact-id" :group-id path-regex :artifact-id path-regex]
     [group-id artifact-id :as req]
-    (do
-      (println (str group-id "-------" artifact-id))
-      (complete req (core/get-project group-id artifact-id))))
+    (complete req (core/get-project group-id artifact-id)))
 
   (DELETE "/api/projects/:group-id/:artifact-id" [group-id artifact-id :as req]
     (complete req (core/rm-project group-id artifact-id)))
