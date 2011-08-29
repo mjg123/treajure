@@ -1,5 +1,6 @@
 (ns cljprj.cljs.add
-  (:require [goog.dom :as dom]
+  (:require [cljs.reader :as reader]
+            [goog.dom :as dom]
             [goog.date :as date]
             [goog.events :as events]
             [goog.net.XhrIo :as xhr]))
@@ -28,6 +29,14 @@
     (aset "Content-Type" "application/clojure")
     (aset "Accept" "application/clojure")))
 
+(defn msg
+  "This is for when a message needs showing to the user"
+  [type message]
+  ;; at the moment, just log to the error thingy
+  (condp = type
+    :error (log [:error message])
+    (log [:unknown message])))
+
 ;;;;;;;;; SHOW AN INDIVIDUAL PROJECT BUSINESS
 
 (defn load-individual-project-from [locn]
@@ -50,16 +59,13 @@
 (defn submit-callback [e]
   (let [resp (aget e "target")
         status (. resp (getStatus))
-        body (. resp (getResponseText))
+        body (reader/read-string (. resp (getResponseText)))
         location (.getResponseHeader resp "location")]
-
-    (log [:submit-response status body])
-    (log location)
 
     (condp = status
       201 (project-upload-success location)
-      400 (log "Upload failed :(")
-      (log "Unexpected problem with upload"))))
+      400 (msg :error (str "Upload failed: " (body :error)))
+      (msg :error (str "Unexpected problem with upload" (body :error))))))
 
 (defn project-from-form []
   {:name (dom-val "add-name")
