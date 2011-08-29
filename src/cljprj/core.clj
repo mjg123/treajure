@@ -1,19 +1,21 @@
 (ns cljprj.core
   (:require [cljprj.persistence :as db]))
 
+(def required-fields [:name :group-id :artifact-id])
+(def all-fields (concat required-fields [:author :latest-version :source-url :readme-text :tags]))
+
 (defn valid-project?
   "Checks if the project contains the minimal amount of data to be valid"
   [prj-data]
   (and
     (map? prj-data)
-    (contains? prj-data :name)
-    (contains? prj-data :group-id)
-    (contains? prj-data :artifact-id)))
+    (every? #(contains? prj-data %) required-fields)
+    (every? #(not= "" (prj-data %)) required-fields)))
 
 (defn clean-project
   "Removes unwanted fields from the project"
   [prj]
-  (select-keys prj [:name :author :group-id :artifact-id :latest-version :source-url :readme-text :tags]))
+  (select-keys prj all-fields))
 
 (defn make-location-url
   "Makes the URL for a single project"
