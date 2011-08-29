@@ -8,7 +8,10 @@
 
 <h1>trea<span class="clj-j">j</span>ure</h1>
 
-<a href="http://github.com/mjg123/cljprj"><img style="width:100px; height:100px; opacity:0.5; position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/71eeaab9d563c2b3c590319b398dd35683265e85/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub"></a>
+<a href="http://github.com/mjg123/cljprj"><img
+        style="width:100px; height:100px; opacity:0.5; position: absolute; top: 0; right: 0; border: 0;"
+        src="https://a248.e.akamai.net/assets.github.com/img/71eeaab9d563c2b3c590319b398dd35683265e85/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
+        alt="Fork me on GitHub"></a>
 
 <br/>
 
@@ -24,60 +27,50 @@
 
     <div class="add-form-row">
         <h3 class="form-label"><label for="add-name" class="keyword">:name</label></h3>
-        <input id="add-name"/>
+        <input id="add-name" class="clj-input"/>
     </div>
     <div class="add-form-row">
         <h3 class="form-label"><label for="add-group-id" class="keyword">:group-id</label></h3>
-        <input id="add-group-id"/>
+        <input id="add-group-id" class="clj-input"/>
 
         <div class="add-field-explanation">;; The binary dependency is specified uniquely by :group-id ...</div>
     </div>
     <div class="add-form-row">
         <h3 class="form-label"><label for="add-artifact-id" class="keyword">:artifact-id</label></h3>
-        <input id="add-artifact-id"/>
+        <input id="add-artifact-id" class="clj-input"/>
 
         <div class="add-field-explanation">;; ... :artifact-id ...</div>
     </div>
     <div class="add-form-row">
         <h3 class="form-label"><label for="add-latest-version" class="keyword">:latest-version</label></h3>
-        <input id="add-latest-version"/>
+        <input id="add-latest-version" class="clj-input"/>
 
         <div class="add-field-explanation">;; ... and :latest-version</div>
     </div>
     <div class="add-form-row">
         <h3 class="form-label"><label for="add-author" class="keyword">:author</label></h3>
-        <input id="add-author"/>
+        <input id="add-author" class="clj-input"/>
     </div>
     <div class="add-form-row">
         <h3 class="form-label"><label for="add-source-url" class="keyword">:source-url</label></h3>
-        <input id="add-source-url"/>
+        <input id="add-source-url" class="clj-input"/>
     </div>
     <div class="add-form-row">
         <h3 class="form-label"><label for="add-tags" class="keyword">:tags</label></h3>
-        <input id="add-tags"/> ]
+        <input id="add-tags" class="clj-input"/> ]
         <span id="hanging-bracket">[</span>
 
         <div class="add-field-explanation">;; tags whitespace-separated</div>
     </div>
     <div class="add-form-row">
         <h3 class="form-label"><label for="add-readme-text" class="keyword">:readme-text</label></h3>
-        <textarea rows="4" cols="256" class="add-input" id="add-readme-text"></textarea> } )
+        <textarea rows="4" cols="256" class="clj-input" id="add-readme-text"></textarea> } )
     </div>
 
     <div class="add-form-row">
         (<span class="fn">when</span> (<span class="fn">ready?</span> you)
         <input type="button" id="add-submit" value="(add project)"/>
         )
-    </div>
-</div>
-
-
-<div class="content-box">
-    <h3>(<span class="fn">ns</span> treajure.log-output)</h3>
-    <br/><br/>
-
-    <div id="log">
-        user=>
     </div>
 </div>
 
@@ -133,6 +126,59 @@
     </div>
 
 </div>
+
+<div class="content-box">
+    <h3>(<span class="fn">ns</span> treajure.find-projects)</h3>
+
+    <br/>
+
+    <div class="show-project-row">
+        <h3>
+            (<span class="fn">show-all</span>
+            (<span class="fn">find-projects</span>
+            <label for="find-name" class="keyword">:name</label> <input id="find-name" class="clj-input"/>
+            <label for="find-tags" class="keyword">:tags</label> <input id="find-tags" class="clj-input"/>
+            <label for="find-sort" class="keyword">:sort-by</label>
+            <select id="find-sort" class="clj-input clj-select">
+                <option selected="true">:random</option>
+            </select>
+            ) )
+        </h3>
+    </div>
+
+    <div class="find-projects-results">
+        <div class="find-projects-item">
+            item1
+        </div>
+        <div class="find-projects-item">
+            item2
+        </div>
+        <div class="find-projects-item">
+            item3
+        </div>
+        <div class="find-projects-item">
+            item4
+        </div>
+        <div class="find-projects-item">
+            item5
+        </div>
+        <div class="find-projects-item">
+            item6
+        </div>
+    </div>
+
+</div>
+
+
+<div class="content-box">
+    <h3>(<span class="fn">ns</span> treajure.log-output)</h3>
+    <br/><br/>
+
+    <div id="log">
+        user=>
+    </div>
+</div>
+
 
 <script type="text/javascript" src="js/treajure.js"></script>
 </body>

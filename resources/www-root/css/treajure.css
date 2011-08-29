@@ -15,18 +15,19 @@ h3 {
   display: inline-block;
 }
 
-input {
+.clj-input {
   border: 1px solid #080;
   width: 200px;
 }
 
-.add-input {
-  border: 1px solid #080;
-  width: 200px;
+.clj-select {
+  background-color: inherit;
+  font-weight: bold;
+  color: #626;
 }
 
-input:focus {
-  background-color: #EFD;
+.clj-input:focus {
+  background-color: #DFC;
 }
 
 #hanging-bracket {
@@ -98,4 +99,15 @@ div.add-field-explanation {
 #log {
   font-family: courier;
   font-size: small;
+}
+
+div.find-projects-results {
+    margin-top: 4px;
+}
+
+div.find-projects-item{
+    margin-top: 4px;
+    border: 1px solid teal;
+    padding-left: 20px;
+    padding-right: 20px;
 }
