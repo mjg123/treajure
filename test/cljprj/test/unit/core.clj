@@ -30,7 +30,9 @@
     (valid-project? (assoc min-prj :group-id "")) => false
     (valid-project? (assoc min-prj :artifact-id "")) => false)
 
-
-;;;; TODO - keys should be trimmed before check
+  (fact "the 3 core keys must each have more than just whitespace"
+    (valid-project? (assoc min-prj :name " ")) => false
+    (valid-project? (assoc min-prj :group-id "\t")) => false
+    (valid-project? (assoc min-prj :artifact-id "  \t   ")) => false)
 
   )

@@ -1,4 +1,5 @@
 (ns cljprj.core
+  (:use [clojure.contrib.string :only [trim]])
   (:require [cljprj.persistence :as db]))
 
 (def required-fields [:name :group-id :artifact-id])
@@ -10,12 +11,13 @@
   (and
     (map? prj-data)
     (every? #(contains? prj-data %) required-fields)
-    (every? #(not= "" (prj-data %)) required-fields)))
+    (every? #(not= "" (trim (prj-data %))) required-fields)))
 
 (defn clean-project
   "Removes unwanted fields from the project"
   [prj]
-  (select-keys prj all-fields))
+  (let [only-valid-fields (select-keys prj all-fields)]
+    (reduce #(assoc %1 (first %2) (trim (second %2))) {} only-valid-fields)))
 
 (defn make-location-url
   "Makes the URL for a single project"
