@@ -47,7 +47,11 @@
 (defn submit-event []
   (xhr/send "/api/projects" submit-callback "PUT" (pr-str (project-from-form)) upload-headers))
 
+
+;;;;;;;;;;;;;;;;;; START THE APP (BUSINESS)
+
 (defn start-app []
+  (log :startup)
   (events/listen (dom/getElement "add-submit")
     "click"
     submit-event))
