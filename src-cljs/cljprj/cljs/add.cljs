@@ -74,8 +74,9 @@
     (set-html "show-readme-text" (prj :readme-text))))
 
 (defn load-individual-project-from [location]
-  (log (str "Loading from " location))
-  (xhr/send location load-callback "GET" nil ajacs-headers))
+  (let [uri (goog.Uri. location)]
+    (log (str "Loading from " uri))
+    (xhr/send uri load-callback "GET" nil ajacs-headers)))
 
 ;;;;;;;;; UPLOAD A NEW PROJECT BUSINESS
 
