@@ -18,6 +18,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; GENERAL BUSINESS
 
+(def whitespace-regex (js* "/\\s+/"))
+
 (defn dom-val [elem-id]
   (s/trim (.value (dom/getElement elem-id))))
 
@@ -62,8 +64,6 @@
   (let [resp (un-xhr e)
         prj (resp :body)]
 
-    (log (pr-str (apply str (interpose " " (prj :tags)))))
-
     (set-html "show-name" (prj :name))
     (set-html "show-group-id" (prj :group-id))
     (set-html "show-artifact-id" (prj :artifact-id))
@@ -106,7 +106,7 @@
    :latest-version (dom-val "add-latest-version")
    :source-url (dom-val "add-source-url")
    :readme-text (dom-val "add-readme-text")
-   :tags (apply vector (s/split (dom-val "add-tags") #"\\s+"))})
+   :tags (apply vector (remove #(= % "") (.split (dom-val "add-tags") whitespace-regex)))})
 
 (defn submit-event []
   (xhr/send "/api/projects" submit-callback "PUT" (pr-str (project-from-form)) ajacs-headers))
@@ -119,18 +119,35 @@
 
 (defn get-search-params []
   {:name (dom-val "search-name")
-   :tags (apply vector (s/split (dom-val "search-tags") #"\\s+"))
+   :tags (apply vector (remove #(= % "") (.split (dom-val "search-tags") whitespace-regex)))
    :sort (dom-val "search-sort")})
 
 (defn make-search-url [search-params]
   (-> (goog.Uri. "/api/projects")
     (add-uri-parameter "name" (search-params :name))
-    (add-uri-parameters "tag" (search-params :tags))
-    ))
+    (add-uri-parameters "tag" (search-params :tags))))
+
+(defn make-result-dom [prj]
+  (let [div (dom/createDom "div" "find-projects-item")]
+    (events/listen div "click" #(load-individual-project-from (prj :href)))
+  
+    (.appendChild div (dom/createDom "span" {} "{ "))
+    (.appendChild div (dom/createDom "span" "keyword" ":name "))
+    (.appendChild div (dom/createDom "span" {} (prj :name)))
+    (.appendChild div (dom/createDom "span" "keyword" ":tags "))
+
+    (.appendChild div (dom/createDom "span" {} (str "[ " (apply str (interpose " " (prj :tags))) " ]")))
+
+    (.appendChild div (dom/createDom "span" {} " }"))
+    div))
+
+(defn show-result! [prj]
+  (let [new-div (make-result-dom prj)]
+    (.appendChild (dom/getElement "find-projects-results") new-div)))
 
 (defn show-results-callback [e]
   (let [resp (un-xhr e)]
-    (log resp)))
+    (doall (map show-result! (get-in resp [:body :results])))))
 
 (defn do-search []
   (clear-search-results!)
@@ -144,6 +161,7 @@
 
 (defn start-app []
   (log :startup)
+  (do-search)
 
   (events/listen (dom/getElement "add-submit")
     "click"

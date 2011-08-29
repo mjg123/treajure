@@ -100,7 +100,11 @@ div.find-projects-results {
 
 div.find-projects-item{
     margin-top: 4px;
-    border: 1px solid teal;
     padding-left: 20px;
     padding-right: 20px;
+}
+
+div.find-projects-item:hover {
+  background-color: #DFC;
+  cursor: pointer;
 }
