@@ -13,8 +13,6 @@ h2 {
 
 h3 {
   display: inline-block;
-  width: 200px;
-  vertical-align: top;
 }
 
 input {
@@ -34,6 +32,11 @@ input:focus {
 #hanging-bracket {
   position: relative;
   left: -224px;
+}
+
+.form-label {
+    width: 200px;
+    vertical-align: top;
 }
 
 #add-submit {
