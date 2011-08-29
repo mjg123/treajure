@@ -17,7 +17,13 @@
   "Removes unwanted fields from the project"
   [prj]
   (let [only-valid-fields (select-keys prj all-fields)]
-    (reduce #(assoc %1 (first %2) (trim (second %2))) {} only-valid-fields)))
+    (reduce
+      #(assoc %1 (first %2)
+         (if (string? (second %2))
+           (trim (second %2))
+           (second %2)))
+      {}
+      only-valid-fields)))
 
 (defn make-location-url
   "Makes the URL for a single project"
@@ -26,7 +32,7 @@
 
 (defn- coords
   "Create the value to be used in the mongo index.
-   As get is always by gid/aid we just need those two things."
+As get is always by gid/aid we just need those two things."
   [gid aid]
   (str gid " $$$ " aid))
 

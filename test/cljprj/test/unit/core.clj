@@ -1,6 +1,6 @@
 (ns cljprj.test.unit.core
   (:use [midje.sweet]
-        [cljprj.core :only [valid-project?]]))
+        [cljprj.core :only [valid-project? clean-project]]))
 
 ;;;;  NB there is nothing to actually unit test yet - this is just an example
 
@@ -34,5 +34,16 @@
     (valid-project? (assoc min-prj :name " ")) => false
     (valid-project? (assoc min-prj :group-id "\t")) => false
     (valid-project? (assoc min-prj :artifact-id "  \t   ")) => false)
+  )
 
+(facts "Facts about cleaning projects"
+
+  (fact "whitespace is trimmed"
+    ((clean-project (assoc min-prj :name "   hello   ")) :name) => "hello")
+
+  (fact "unwanted properties are removed"
+    (contains? (clean-project (assoc min-prj :HAHAHA "   hello   ")) :HAHAHA) => false)
+
+  (fact "tags-as-vector is valid"
+    ((clean-project (assoc min-prj :tags [:t1 :t2])) :tags) => [:t1 :t2])
   )
