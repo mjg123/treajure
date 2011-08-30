@@ -70,7 +70,7 @@
 
     <div class="add-form-row">
         (<span class="fn">when</span> (<span class="fn">ready?</span> you)
-        <span id="add-submit" class="fake-link">(<span class="fn">add</span> project)</span>
+        <span id="add-submit" class="fake-link">(<span class="fn">add!</span> project)</span>
         )
     </div>
 </div>
@@ -135,7 +135,7 @@
 
     <div class="show-project-row">
         <h3>
-            (<span class="fn fake-link" id="search-submit">show-all</span>
+            (<span class="fn fake-link" id="search-submit">show-all!</span>
             (<span class="fn">find-projects</span>
             <label for="search-name" class="keyword">:name</label> <input id="search-name" class="clj-input"/>
             <label for="search-tags" class="keyword">:tags</label> <input id="search-tags" class="clj-input"/>
