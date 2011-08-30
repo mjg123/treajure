@@ -1,4 +1,5 @@
-(ns cljprj.multi-complete
+(ns cljprj.rest-lib
+  (:use [clojure.contrib.string :only [split]])
   (:require [clojure.contrib.json :as json]))
 
 ;; Various REST helpful stuffs
@@ -33,7 +34,8 @@
 
 (defn req-body [req]
   (let [body-stream (req :body)
-        content-type ((req :headers) "content-type")]
+        content-type-with-charset ((req :headers) "content-type")
+        content-type (first (split #";" content-type-with-charset))]
 
     (condp = (keyword content-type)
       :application/clojure (read-string (slurp body-stream))

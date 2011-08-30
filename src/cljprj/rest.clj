@@ -1,6 +1,6 @@
 (ns cljprj.rest
   (:use compojure.core)
-  (:use cljprj.multi-complete)
+  (:use cljprj.rest-lib)
   (:require
     [compojure.route :as route]
     [cljprj.core :as core]))
