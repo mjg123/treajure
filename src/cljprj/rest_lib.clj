@@ -31,11 +31,20 @@
    :headers (assoc headers "content-type" "text/plain")
    :body (str "The response is:\n\n  " body "\n\nWhy not try an accept header: application/json or application/clojure??")})
 
+(defn str-contains? [needle haystack]
+  (not= -1 (.indexOf haystack needle)))
+
+(defn extract-content-type [header]
+  (if (nil? header)
+    nil
+    (if (str-contains? ";" header)
+      (first (split #";" header))
+      header)))
 
 (defn req-body [req]
   (let [body-stream (req :body)
         content-type-with-charset ((req :headers) "content-type")
-        content-type (first (split #";" content-type-with-charset))]
+        content-type (extract-content-type content-type-with-charset)]
 
     (condp = (keyword content-type)
       :application/clojure (read-string (slurp body-stream))

@@ -3,7 +3,7 @@
   (:require [cljprj.persistence :as db]))
 
 (def required-fields [:name :group-id :artifact-id])
-(def all-fields (concat required-fields [:author :latest-version :source-url :readme-text :tags]))
+(def all-fields (concat required-fields [:author :version :source-url :readme-text :tags]))
 
 (defn valid-project?
   "Checks if the project contains the minimal amount of data to be valid"

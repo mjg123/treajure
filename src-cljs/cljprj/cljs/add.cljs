@@ -67,7 +67,7 @@
     (set-html "show-name" (prj :name))
     (set-html "show-group-id" (prj :group-id))
     (set-html "show-artifact-id" (prj :artifact-id))
-    (set-html "show-latest-version" (prj :latest-version))
+    (set-html "show-version" (prj :version))
     (set-html "show-author" (prj :author))
     (set-html "show-source-url" (prj :source-url))
     (set-html "show-tags" (str "[" (apply str (interpose " " (prj :tags))) "]"))
@@ -85,7 +85,7 @@
     (map
       clear-elem
       ["add-name" "add-group-id" "add-artifact-id" "add-author"
-       "add-latest-version" "add-source-url" "add-readme-text" "add-tags"])))
+       "add-version" "add-source-url" "add-readme-text" "add-tags"])))
 
 (defn project-upload-success [new-locn]
   (clear-add-form)
@@ -105,7 +105,7 @@
    :group-id (dom-val "add-group-id")
    :artifact-id (dom-val "add-artifact-id")
    :author (dom-val "add-author")
-   :latest-version (dom-val "add-latest-version")
+   :version (dom-val "add-version")
    :source-url (dom-val "add-source-url")
    :readme-text (dom-val "add-readme-text")
    :tags (apply vector (remove #(= % "") (.split (dom-val "add-tags") whitespace-regex)))})

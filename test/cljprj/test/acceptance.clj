@@ -38,8 +38,22 @@
   (clear-all-used-projects!)
 
   (fact "Can upload a project and retrieve it again as application/json"
+    (clear-all-used-projects!)
     (let [project (make-project 2)
           {upload-status :status {new-location :location} :headers} (add-project-json project)
+          {get-status :status body-str :body} (drv/GET new-location accept-json)
+          body (json/read-json body-str)]
+
+      upload-status => 201
+      get-status => 200
+      (body :name) => (project :name)
+      (body :group-id) => (project :group-id)
+      (body :artifact-id) => (project :artifact-id)))
+
+  (fact "Can upload a project and retrieve it again as with utf-8 charset specified"
+    (clear-all-used-projects!)
+    (let [project (make-unique-project)
+          {upload-status :status {new-location :location} :headers} (add-project-clj-utf8 project)
           {get-status :status body-str :body} (drv/GET new-location accept-json)
           body (json/read-json body-str)]
 
