@@ -28,8 +28,8 @@
 
 (defmethod complete :default [_ {:keys [status headers body]}]
   {:status status
-   :headers (assoc headers "content-type" "text/plain")
-   :body (str "The response is:\n\n  " body "\n\nWhy not try an accept header: application/json or application/clojure??")})
+   :headers (assoc headers "content-type" "text/html")
+   :body (str "<h1>HEYYY BUDDY!</h1><div style='border: 4px solid teal; padding: 8px; font-family: courier;'>" body "</div>Why not try an accept header like application/json or application/clojure??")})
 
 (defn str-contains? [needle haystack]
   (not= -1 (.indexOf haystack needle)))

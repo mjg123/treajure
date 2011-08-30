@@ -159,4 +159,23 @@
 
       (keys body) => (in-any-order (keys (make-full-project "five")))))
 
+  (fact "list-project filtering error cases"
+    ((drv/GET "/api/projects?name=foo&name=bar") :status) => 400)
+
+  (fact "filtering by name"
+    (clear-all-used-projects!)
+
+    (let [expected (make-project "matthew")]
+    
+      (add-project-clj expected)
+      (add-project-clj (make-project "andrew"))
+
+      (let [resp (drv/GET "/api/projects?name=matthew" accept-clj)
+            body (read-string (resp :body))]
+
+        (resp :status) => 200
+        (count (body :results)) => 1
+        (get-in body [:results 0 :name]) => (expected :name))))
+
+
   (clear-all-used-projects!))

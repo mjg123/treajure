@@ -31,5 +31,5 @@
       (destroy! :projects result))
     result))
 
-(defn list-projects []
+(defn list-projects [name]
   (map :project (fetch :projects)))

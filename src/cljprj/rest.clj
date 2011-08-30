@@ -11,7 +11,8 @@
   (GET "/ping" [:as req] "pong")
 
   (GET "/api/projects" [:as req]
-    (complete req (core/list-projects)))
+    (complete req
+      (core/list-projects (select-keys (req :query-params) ["name" "tag"]))))
 
   (PUT "/api/projects" [:as req]
     (complete req (core/add-project (req-body req))))

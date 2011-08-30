@@ -5,6 +5,11 @@
 (def required-fields [:name :group-id :artifact-id])
 (def all-fields (concat required-fields [:author :version :source-url :readme-text :tags]))
 
+(defn make-error [code message]
+  {:status code :body {:error message}})
+
+(def no-such-project (make-error 404 "No such project"))
+
 (defn valid-project?
   "Checks if the project contains the minimal amount of data to be valid"
   [prj-data]
@@ -46,11 +51,7 @@ As get is always by gid/aid we just need those two things."
       {:status 201
        :headers {"location" (make-location-url prj)}
        :body {:message "yum, thanks"}})
-    {:status 400
-     :body {:error "uploaded project must have at least [:name :group-id :artifact-id]"}}))
-
-
-(def no-such-project {:status 404 :body {:error "No such project"}})
+    (make-error 400 "uploaded project must have at least #{ :name :group-id :artifact-id }")))
 
 (defn get-project
   "retrieves a single project"
@@ -73,6 +74,15 @@ As get is always by gid/aid we just need those two things."
   [prj]
   (assoc prj :href (make-location-url prj)))
 
-(defn list-projects []
-  (let [results (db/list-projects)]
-    {:body {:results (apply vector (map attach-href (reverse results)))}}))
+(defn- name-filter [name results]
+  (if (nil? name) results
+    (filter #(.contains (% :name) name) results)))
+
+(defn list-projects [{name "name" tags "tags"}]
+
+  (if (not-any? true? [(nil? name) (string? name)])
+    (make-error 400 "name must be specified 0 or 1 times")
+
+    (let [raw-results (db/list-projects)
+          filtered-results (name-filter name raw-results)]
+      {:body {:results (apply vector (map attach-href (reverse filtered-results)))}})))
