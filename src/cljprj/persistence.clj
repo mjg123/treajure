@@ -32,4 +32,6 @@
     result))
 
 (defn list-projects [name]
-  (map :project (fetch :projects)))
+  (if (nil? name)
+    (map :project (fetch :projects))
+    (map :project (fetch :projects :where {:project.name (re-pattern (str name "(?i)"))}))))
