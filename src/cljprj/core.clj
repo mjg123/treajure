@@ -1,5 +1,6 @@
 (ns cljprj.core
-  (:use [clojure.contrib.string :only [trim]])
+  (:use [clojure.contrib.string :only [trim]]
+        [cljprj.either])
   (:require [cljprj.persistence :as db]))
 
 (def required-fields [:name :group-id :artifact-id])
@@ -37,11 +38,14 @@
 
 (defn add-project [prj]
   (if (valid-project? prj)
-    (let [prj (clean-project prj)]
-      (db/add-project (clean-project prj))
-      {:status 201
-       :headers {"location" (make-location-url prj)}
-       :body {:message "yum, thanks"}})
+
+    (let [prj (clean-project prj)
+          [error result] (db/add-project (clean-project prj))]
+      (if result
+        {:status 201
+         :headers {"location" (make-location-url prj)}
+         :body {:message "yum, thanks"}}
+        (make-error 409 error)))
 
     (make-error 400 "uploaded project must have at least #{ :name :group-id :artifact-id }")))
 

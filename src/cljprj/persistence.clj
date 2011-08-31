@@ -1,5 +1,6 @@
 (ns cljprj.persistence
-  (:use somnium.congomongo))
+  (:use [somnium.congomongo]
+        [cljprj.either]))
 
 ;; copied from http://thecomputersarewinning.com/post/clojure-heroku-noir-mongo
 (defn- split-mongo-url [url]
@@ -24,12 +25,14 @@
   ([prj]
     (coords (prj :group-id) (prj :artifact-id))))
 
-(defn add-project [project]
-  (insert! :projects {:coords-idx (coords project) :project project}))
-
 (defn get-project [gid aid]
   (let [result (fetch-one :projects :where {:coords-idx (coords gid aid)})]
     (:project result)))
+
+(defn add-project [project]
+  (if (nil? (get-project (project :group-id) (project :artifact-id))) ;; TODO - race condition here.
+    (right (insert! :projects {:coords-idx (coords project) :project project}))
+    (left "Project already exists")))
 
 (defn rm-project [gid aid]
   (destroy! :projects {:coords-idx (coords gid aid)}))
