@@ -2,8 +2,6 @@
   (:use [midje.sweet]
         [cljprj.core :only [valid-project? clean-project]]))
 
-;;;;  NB there is nothing to actually unit test yet - this is just an example
-
 (def min-prj {:name "name" :group-id "gid" :artifact-id "aid"})
 
 (facts "Facts about what makes a valid project"
