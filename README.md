@@ -7,6 +7,8 @@ A Clojure Project
     lein deps # if it's the first time
     lein run -m cljprj.web
 
+    lein ring server-headless 8080
+
 This will run on port 8080.  You can override that with an environment var called `PORT`
 
 You will need mongodb running, the default connection string is:
