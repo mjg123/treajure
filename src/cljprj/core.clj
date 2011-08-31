@@ -74,10 +74,10 @@ As get is always by gid/aid we just need those two things."
   [prj]
   (assoc prj :href (make-location-url prj)))
 
-(defn list-projects [{name "name" tags "tags"}]
+(defn list-projects [{name "name" tag "tag"}]
 
   (if (not-any? true? [(nil? name) (string? name)])
     (make-error 400 "name must be specified 0 or 1 times")
 
-    (let [results (db/list-projects name)]
+    (let [results (db/list-projects name tag)]
       {:body {:results (apply vector (map attach-href (reverse results)))}})))

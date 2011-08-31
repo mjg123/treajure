@@ -2,8 +2,6 @@
   (:use [midje.sweet]
         [cljprj.core :only [valid-project? clean-project]]))
 
-;;;;  NB there is nothing to actually unit test yet - this is just an example
-
 (def min-prj {:name "name" :group-id "gid" :artifact-id "aid"})
 
 (facts "Facts about what makes a valid project"
@@ -33,8 +31,7 @@
   (fact "the 3 core keys must each have more than just whitespace"
     (valid-project? (assoc min-prj :name " ")) => false
     (valid-project? (assoc min-prj :group-id "\t")) => false
-    (valid-project? (assoc min-prj :artifact-id "  \t   ")) => false)
-  )
+    (valid-project? (assoc min-prj :artifact-id "  \t   ")) => false))
 
 (facts "Facts about cleaning projects"
 
@@ -48,5 +45,4 @@
     (contains? (clean-project (assoc min-prj :HAHAHA "   hello   ")) :HAHAHA) => false)
 
   (fact "tags-as-vector is valid"
-    ((clean-project (assoc min-prj :tags [:t1 :t2])) :tags) => [:t1 :t2])
-  )
+    ((clean-project (assoc min-prj :tags [:t1 :t2])) :tags) => [:t1 :t2]))
