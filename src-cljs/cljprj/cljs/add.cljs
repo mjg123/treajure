@@ -98,7 +98,8 @@
     (condp = (resp :status)
       201 (project-upload-success location)
       400 (msg :error (str "Send failed: " (get-in resp [:body :error])))
-      (msg :error (str "Unexpected problem with send" (get-in resp [:body :error]))))))
+      409 (msg :error (str "Send failed: " (get-in resp [:body :error])))
+      (msg :error (str "Unexpected problem with send: " (get-in resp [:body :error]))))))
 
 (defn project-from-form []
   {:name (dom-val "add-name")
