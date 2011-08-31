@@ -14,19 +14,25 @@
 (let [config (split-mongo-url (get (System/getenv) "MONGOHQ_URL" default-mongo-connection))]
   (mongo! :db (:db config) :host (:host config) :port (Integer. (:port config)))
   (authenticate (:user config) (:pass config))
-  (add-index! :projects [:coords-idx]))
+  (add-index! :projects [:coords-idx] :unique true))
 
+(defn- coords
+  "Create the value to be used in the mongo index.
+  As get is always by gid/aid we just need those two things."
+  ([gid aid]
+    (str gid " $$$ " aid))
+  ([prj]
+    (coords (prj :group-id) (prj :artifact-id))))
 
+(defn add-project [project]
+  (insert! :projects {:coords-idx (coords project) :project project}))
 
-(defn add-project [project-data]
-  (insert! :projects project-data))
-
-(defn get-project [coords]
-  (let [result (fetch-one :projects :where {:coords-idx coords})]
+(defn get-project [gid aid]
+  (let [result (fetch-one :projects :where {:coords-idx (coords gid aid)})]
     (:project result)))
 
-(defn rm-project [coords]
-  (let [result (fetch-one :projects :where {:coords-idx coords})]
+(defn rm-project [gid aid]
+  (let [result (fetch-one :projects :where {:coords-idx (coords gid aid)})]
     (when (not (nil? result))
       (destroy! :projects result))
     result))
@@ -34,13 +40,13 @@
 (defn- assoc-name-query [where-clause name]
   (cond
     (string? name) (assoc where-clause :project.name (re-pattern (str name "(?i)")))
-    :else           where-clause))
+    :else where-clause))
 
 (defn- assoc-tags-query [where-clause tag]
   (cond
     (string? tag) (assoc where-clause :project.tags tag)
-    (vector? tag) (assoc where-clause :project.tags { :$all tag })
-    :else          where-clause))
+    (vector? tag) (assoc where-clause :project.tags {:$all tag})
+    :else where-clause))
 
 (defn list-projects [name tag]
 
@@ -48,8 +54,6 @@
         (-> {}
           (assoc-name-query name)
           (assoc-tags-query tag))]
-
-  (println (pr-str where-clause))
 
     (map :project (fetch :projects :where where-clause))))
 

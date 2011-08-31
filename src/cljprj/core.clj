@@ -35,28 +35,20 @@
   [prj]
   (str "/api/projects/" (prj :group-id) "/" (prj :artifact-id)))
 
-(defn- coords
-  "Create the value to be used in the mongo index.
-As get is always by gid/aid we just need those two things."
-  [gid aid]
-  (str gid " $$$ " aid))
-
-(defn- prj-coords [prj]
-  (coords (prj :group-id) (prj :artifact-id)))
-
 (defn add-project [prj]
   (if (valid-project? prj)
     (let [prj (clean-project prj)]
-      (db/add-project {:project prj :coords-idx (prj-coords prj)})
+      (db/add-project (clean-project prj))
       {:status 201
        :headers {"location" (make-location-url prj)}
        :body {:message "yum, thanks"}})
+
     (make-error 400 "uploaded project must have at least #{ :name :group-id :artifact-id }")))
 
 (defn get-project
   "retrieves a single project"
   [gid aid]
-  (let [result (db/get-project (coords gid aid))]
+  (let [result (db/get-project gid aid)]
     (if result
       {:body result}
       no-such-project)))
@@ -64,7 +56,7 @@ As get is always by gid/aid we just need those two things."
 (defn rm-project
   "removes a project from the service"
   [gid aid]
-  (let [result (db/rm-project (coords gid aid))]
+  (let [result (db/rm-project gid aid)]
     (if result
       {:status 204 :body nil}
       no-such-project)))
