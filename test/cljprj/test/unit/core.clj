@@ -48,5 +48,4 @@
     (contains? (clean-project (assoc min-prj :HAHAHA "   hello   ")) :HAHAHA) => false)
 
   (fact "tags-as-vector is valid"
-    ((clean-project (assoc min-prj :tags [:t1 :t2])) :tags) => [:t1 :t2])
-  )
+    ((clean-project (assoc min-prj :tags [:t1 :t2])) :tags) => [:t1 :t2]))
