@@ -97,7 +97,7 @@
 
         (let [{redelete-status :status} (drv/DELETE new-location)]
 
-          redelete-status => 404))))
+          redelete-status => 204))))
 
   (fact "we can GET a list of all projects - even if it's an empty list"
     (clear-all-used-projects!)

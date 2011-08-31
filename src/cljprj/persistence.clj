@@ -32,10 +32,7 @@
     (:project result)))
 
 (defn rm-project [gid aid]
-  (let [result (fetch-one :projects :where {:coords-idx (coords gid aid)})]
-    (when (not (nil? result))
-      (destroy! :projects result))
-    result))
+  (destroy! :projects {:coords-idx (coords gid aid)}))
 
 (defn- assoc-name-query [where-clause name]
   (cond
