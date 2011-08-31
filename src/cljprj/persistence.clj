@@ -31,7 +31,25 @@
       (destroy! :projects result))
     result))
 
-(defn list-projects [name]
-  (if (nil? name)
-    (map :project (fetch :projects))
-    (map :project (fetch :projects :where {:project.name (re-pattern (str name "(?i)"))}))))
+(defn- assoc-name-query [where-clause name]
+  (cond
+    (string? name) (assoc where-clause :project.name (re-pattern (str name "(?i)")))
+    :else           where-clause))
+
+(defn- assoc-tags-query [where-clause tag]
+  (cond
+    (string? tag) (assoc where-clause :project.tags tag)
+    (vector? tag) (assoc where-clause :project.tags { :$all tag })
+    :else          where-clause))
+
+(defn list-projects [name tag]
+
+  (let [where-clause
+        (-> {}
+          (assoc-name-query name)
+          (assoc-tags-query tag))]
+
+  (println (pr-str where-clause))
+
+    (map :project (fetch :projects :where where-clause))))
+
