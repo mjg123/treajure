@@ -138,7 +138,12 @@
     (.appendChild div (dom/createDom "span" {} (prj :name)))
     (.appendChild div (dom/createDom "span" "keyword" ":tags "))
 
-    (.appendChild div (dom/createDom "span" {} (str "[ " (apply str (interpose " " (prj :tags))) " ]")))
+    (.appendChild div (dom/createDom "span" {} "[ "))
+
+    (doseq [tag (prj :tags)]
+      (.appendChild div (dom/createDom "span" "tag" (str tag " "))))
+
+    (.appendChild div (dom/createDom "span" {} " ]"))
 
     (.appendChild div (dom/createDom "span" {} " }"))
     div))
