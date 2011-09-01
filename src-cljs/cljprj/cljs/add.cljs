@@ -3,6 +3,7 @@
             [goog.dom :as dom]
             [goog.date :as date]
             [goog.events :as events]
+            [goog.events.EventType :as event-type]
             [goog.Uri :as uri]
             [goog.net.XhrIo :as xhr]
             [clojure.string :as s]))
@@ -171,18 +172,20 @@
     (xhr/send search-url show-results-callback "GET" nil ajacs-headers)))
 
 
+(defn search-if-enter [e]
+  (when (= 13 (.keyCode e)) (do-search)))
+
 ;;;;;;;;;;;;;;;;;; START THE APP (BUSINESS)
 
 (defn start-app []
   (log :startup)
   (do-search)
 
-  (events/listen (dom/getElement "add-submit")
-    "click"
-    submit-event)
+  (events/listen (dom/getElement "add-submit") event-type/CLICK submit-event)
 
-  (events/listen (dom/getElement "search-submit")
-    "click"
-    do-search))
+  (events/listen (dom/getElement "search-submit") event-type/CLICK  do-search)
+  (events/listen (dom/getElement "search-name")   event-type/KEYUP  search-if-enter)
+  (events/listen (dom/getElement "search-tags")   event-type/KEYUP  search-if-enter)
+  (events/listen (dom/getElement "search-sort")   event-type/CHANGE do-search))
 
 (start-app)
