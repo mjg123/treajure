@@ -4,7 +4,7 @@
   (:require [cljprj.persistence :as db]))
 
 (def required-fields [:name :group-id :artifact-id])
-(def all-fields (concat required-fields [:author :version :source-url :readme-text :tags]))
+(def all-fields (concat required-fields [:author :version :homepage :source-url :readme-text :tags]))
 
 (defn make-error [code message]
   {:status code :body {:error message}})
@@ -26,7 +26,7 @@
     (reduce
       #(assoc %1 (first %2)
          (if (string? (second %2))
-           (trim (.replaceAll (second %2) "\"" "'"))
+           (trim (.replaceAll (second %2) "\"" "'"))  ;(
            (second %2)))
       {}
       only-valid-fields)))

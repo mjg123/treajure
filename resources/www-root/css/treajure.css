@@ -15,6 +15,15 @@ h3 {
   display: inline-block;
 }
 
+a {
+  text-decoration: none;
+  color: #060;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 .clj-input {
   border: 1px solid #080;
   width: 200px;
@@ -45,8 +54,11 @@ h3 {
     vertical-align: top;
 }
 
+.fake-link {
+  color: #060;
+}
+
 .fake-link:hover {
-  background: #DFD;
   cursor: pointer;
 }
 

@@ -53,6 +53,10 @@
         <input id="add-author" class="clj-input"/>
     </div>
     <div class="add-form-row">
+        <h3 class="form-label"><label for="add-homepage" class="keyword">:homepage</label></h3>
+        <input id="add-homepage" class="clj-input"/>
+    </div>
+    <div class="add-form-row">
         <h3 class="form-label"><label for="add-source-url" class="keyword">:source-url</label></h3>
         <input id="add-source-url" class="clj-input"/>
     </div>
@@ -70,7 +74,7 @@
 
     <div class="add-form-row">
         (<span class="fn">when</span> (<span class="fn">ready?</span> you)
-        <span id="add-submit" class="fake-link">(<span class="fn">add!</span> project)</span>
+        <span id="add-submit">(<span class="fn fake-link">add!</span> project)</span>
         )
     </div>
 </div>
@@ -105,6 +109,11 @@
     <div class="show-project-row">
         <h3 class="keyword show-label">:author</h3>
         <span id="show-author">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label">:homepage</h3>
+        <span id="show-homepage">...</span>
     </div>
 
     <div class="show-project-row">

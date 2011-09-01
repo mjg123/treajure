@@ -60,6 +60,12 @@
 
 ;;;;;;;;; SHOW AN INDIVIDUAL PROJECT BUSINESS
 
+(defn linkify [url]
+  (cond
+    (nil? url) ""
+    (= "" url) ""
+    :else (str "<a href='" url "'>" url "</a>")))
+
 (defn load-callback [e]
   (let [resp (un-xhr e)
         prj (resp :body)]
@@ -69,7 +75,8 @@
     (set-html "show-artifact-id" (prj :artifact-id))
     (set-html "show-version" (prj :version))
     (set-html "show-author" (prj :author))
-    (set-html "show-source-url" (prj :source-url))
+    (set-html "show-homepage" (linkify (prj :homepage)))
+    (set-html "show-source-url" (linkify (prj :source-url)))
     (set-html "show-tags" (str "[" (apply str (interpose " " (prj :tags))) "]"))
     (set-html "show-readme-text" (prj :readme-text))))
 
@@ -81,11 +88,9 @@
 ;;;;;;;;; UPLOAD A NEW PROJECT BUSINESS
 
 (defn clear-add-form []
-  (doall
-    (map
-      clear-elem
-      ["add-name" "add-group-id" "add-artifact-id" "add-author"
-       "add-version" "add-source-url" "add-readme-text" "add-tags"])))
+  (doseq [elem ["add-name" "add-group-id" "add-artifact-id" "add-author" "add-homepage"
+                "add-version" "add-source-url" "add-readme-text" "add-tags"]]
+    (clear-elem elem)))
 
 (defn project-upload-success [new-locn]
   (clear-add-form)
@@ -108,6 +113,7 @@
    :author (dom-val "add-author")
    :version (dom-val "add-version")
    :source-url (dom-val "add-source-url")
+   :homepage (dom-val "add-homepage")
    :readme-text (dom-val "add-readme-text")
    :tags (apply vector (remove #(= % "") (.split (dom-val "add-tags") whitespace-regex)))})
 
