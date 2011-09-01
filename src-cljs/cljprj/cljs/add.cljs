@@ -1,6 +1,7 @@
 (ns cljprj.cljs.add
   (:require [cljs.reader :as reader]
             [goog.dom :as dom]
+            [goog.dom.classes :as classes]
             [goog.date :as date]
             [goog.events :as events]
             [goog.events.EventType :as event-type]
@@ -142,9 +143,9 @@
     (events/listen div "click" #(load-individual-project-from (prj :href)))
 
     (.appendChild div (dom/createDom "span" {} "{ "))
-    (.appendChild div (dom/createDom "span" "keyword" ":name "))
+    (.appendChild div (dom/createDom "span" "keyword indented" ":name "))
     (.appendChild div (dom/createDom "span" {} (prj :name)))
-    (.appendChild div (dom/createDom "span" "keyword" ":tags "))
+    (.appendChild div (dom/createDom "span" "keyword indented" ":tags "))
 
     (.appendChild div (dom/createDom "span" {} "[ "))
 
@@ -175,6 +176,20 @@
 (defn search-if-enter [e]
   (when (= 13 (.keyCode e)) (do-search)))
 
+;;;;;;;;;;;;;;;;; SHOW THE UI BOXES BUSINESS
+
+(defn show! [ui-view]
+
+  (condp = ui-view
+    :add-project (do
+                   (classes/enable (dom/getElement "add-project-box") "hidden" false)
+                   (classes/enable (dom/getElement "show-project-box") "hidden" true)
+                   (classes/enable (dom/getElement "search-box") "hidden" true))
+    :search (do
+              (classes/enable (dom/getElement "add-project-box") "hidden" true)
+              (classes/enable (dom/getElement "show-project-box") "hidden" false)
+              (classes/enable (dom/getElement "search-box") "hidden" false))))
+
 ;;;;;;;;;;;;;;;;;; START THE APP (BUSINESS)
 
 (defn start-app []
@@ -183,9 +198,14 @@
 
   (events/listen (dom/getElement "add-submit") event-type/CLICK submit-event)
 
-  (events/listen (dom/getElement "search-submit") event-type/CLICK  do-search)
-  (events/listen (dom/getElement "search-name")   event-type/KEYUP  search-if-enter)
-  (events/listen (dom/getElement "search-tags")   event-type/KEYUP  search-if-enter)
-  (events/listen (dom/getElement "search-sort")   event-type/CHANGE do-search))
+  (events/listen (dom/getElement "search-submit") event-type/CLICK do-search)
+  (events/listen (dom/getElement "search-name") event-type/KEYUP search-if-enter)
+  (events/listen (dom/getElement "search-tags") event-type/KEYUP search-if-enter)
+  (events/listen (dom/getElement "search-sort") event-type/CHANGE do-search)
+
+  (events/listen (dom/getElement "search-tabber") event-type/CLICK #(show! :search))
+  (events/listen (dom/getElement "add-tabber") event-type/CLICK #(show! :add-project))
+
+  (show! :search))
 
 (start-app)

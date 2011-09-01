@@ -6,17 +6,27 @@
 </head>
 <body>
 
-<h1>trea<span class="clj-j">j</span>ure</h1>
 
 <a href="http://github.com/mjg123/cljprj">
     <img style="width:100px; height:100px; opacity:0.5; position: absolute; top: 0; right: 0; border: 0;"
-         src="https://a248.e.akamai.net/assets.github.com/img/71eeaab9d563c2b3c590319b398dd35683265e85/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
-         alt="Fork me on GitHub">
+    src="https://a248.e.akamai.net/assets.github.com/img/71eeaab9d563c2b3c590319b398dd35683265e85/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
+    alt="Fork me on GitHub">
 </a>
+
+<div id="tabbers">
+    <span id="add-tabber" class="tabber">(<span class="fn fake-link">show!</span> <span class="keyword">:add-project</span>)</span>
+    <span id="search-tabber" class="tabber">(<span class="fn fake-link">show!</span> <span class="keyword">:search</span>)</span>
+</div>
+
+<h1>trea<span class="clj-j">j</span>ure</h1>
 
 <br/>
 
-<div id="add-project" class="content-box">
+<noscript>
+    You will need to enable javascript to use treajure.
+</noscript>
+
+<div id="add-project-box" class="content-box hidden">
 
     <h3>(<span class="fn">ns</span> treajure.add-a-project)</h3>
 
@@ -27,48 +37,48 @@
     </div>
 
     <div class="add-form-row">
-        <h3 class="form-label"><label for="add-name" class="keyword">:name</label></h3>
+        <h3 class="form-label"><label for="add-name" class="keyword indented">:name</label></h3>
         <input id="add-name" class="clj-input"/>
     </div>
     <div class="add-form-row">
-        <h3 class="form-label"><label for="add-group-id" class="keyword">:group-id</label></h3>
+        <h3 class="form-label"><label for="add-group-id" class="keyword indented">:group-id</label></h3>
         <input id="add-group-id" class="clj-input"/>
 
         <div class="add-field-explanation">;; The binary dependency is specified uniquely by :group-id ...</div>
     </div>
     <div class="add-form-row">
-        <h3 class="form-label"><label for="add-artifact-id" class="keyword">:artifact-id</label></h3>
+        <h3 class="form-label"><label for="add-artifact-id" class="keyword indented">:artifact-id</label></h3>
         <input id="add-artifact-id" class="clj-input"/>
 
         <div class="add-field-explanation">;; ... :artifact-id ...</div>
     </div>
     <div class="add-form-row">
-        <h3 class="form-label"><label for="add-version" class="keyword">:version</label></h3>
+        <h3 class="form-label"><label for="add-version" class="keyword indented">:version</label></h3>
         <input id="add-version" class="clj-input"/>
 
         <div class="add-field-explanation">;; ... and :version</div>
     </div>
     <div class="add-form-row">
-        <h3 class="form-label"><label for="add-author" class="keyword">:author</label></h3>
+        <h3 class="form-label"><label for="add-author" class="keyword indented">:author</label></h3>
         <input id="add-author" class="clj-input"/>
     </div>
     <div class="add-form-row">
-        <h3 class="form-label"><label for="add-homepage" class="keyword">:homepage</label></h3>
+        <h3 class="form-label"><label for="add-homepage" class="keyword indented">:homepage</label></h3>
         <input id="add-homepage" class="clj-input"/>
     </div>
     <div class="add-form-row">
-        <h3 class="form-label"><label for="add-source-url" class="keyword">:source-url</label></h3>
+        <h3 class="form-label"><label for="add-source-url" class="keyword indented">:source-url</label></h3>
         <input id="add-source-url" class="clj-input"/>
     </div>
     <div class="add-form-row">
-        <h3 class="form-label"><label for="add-tags" class="keyword">:tags</label></h3>
+        <h3 class="form-label"><label for="add-tags" class="keyword indented">:tags</label></h3>
         <input id="add-tags" class="clj-input"/> ]
         <span id="hanging-bracket">[</span>
 
         <div class="add-field-explanation">;; tags whitespace-separated</div>
     </div>
     <div class="add-form-row">
-        <h3 class="form-label"><label for="add-readme-text" class="keyword">:readme-text</label></h3>
+        <h3 class="form-label"><label for="add-readme-text" class="keyword indented">:readme-text</label></h3>
         <textarea rows="4" cols="256" class="clj-input" id="add-readme-text"></textarea> } )
     </div>
 
@@ -80,65 +90,7 @@
 
 </div>
 
-<div class="content-box">
-    <h3>(<span class="fn">ns</span> treajure.show-project-details)</h3>
-
-    <div class="show-project-row">
-        <h3>{</h3>
-    </div>
-
-    <div class="show-project-row">
-        <h3 class="keyword show-label">:name</h3>
-        <span id="show-name" class="show-content">...</span>
-    </div>
-
-    <div class="show-project-row">
-        <h3 class="keyword show-label">:group-id</h3>
-        <span id="show-group-id" class="show-content">...</span>
-    </div>
-
-    <div class="show-project-row">
-        <h3 class="keyword show-label">:artifact-id</h3>
-        <span id="show-artifact-id" class="show-content">...</span>
-    </div>
-
-    <div class="show-project-row">
-        <h3 class="keyword show-label">:version</h3>
-        <span id="show-version" class="show-content">...</span>
-    </div>
-
-    <div class="show-project-row">
-        <h3 class="keyword show-label">:author</h3>
-        <span id="show-author" class="show-content">...</span>
-    </div>
-
-    <div class="show-project-row">
-        <h3 class="keyword show-label">:homepage</h3>
-        <span id="show-homepage" class="show-content">...</span>
-    </div>
-
-    <div class="show-project-row">
-        <h3 class="keyword show-label">:source-url</h3>
-        <span id="show-source-url" class="show-content">...</span>
-    </div>
-
-    <div class="show-project-row">
-        <h3 class="keyword show-label">:tags</h3>
-        <span id="show-tags" class="show-content">...</span>
-    </div>
-
-    <div class="show-project-row">
-        <h3 class="keyword show-label">:readme-text</h3>
-        <span id="show-readme-text" class="show-content">...</span>
-    </div>
-
-    <div class="show-project-row">
-        <h3>}</h3>
-    </div>
-
-</div>
-
-<div class="content-box">
+<div id="search-box" class="content-box hidden">
     <h3>(<span class="fn">ns</span> treajure.find-projects)</h3>
 
     <br/>
@@ -147,9 +99,9 @@
         <h3>
             (<span class="fn fake-link" id="search-submit">show-all!</span>
             (<span class="fn">find-projects</span>
-            <label for="search-name" class="keyword">:name</label> <input id="search-name" class="clj-input"/>
-            <label for="search-tags" class="keyword">:tags</label> <input id="search-tags" class="clj-input"/>
-            <label for="search-sort" class="keyword">:sort-by</label>
+            <label for="search-name" class="keyword indented">:name</label> <input id="search-name" class="clj-input"/>
+            <label for="search-tags" class="keyword indented">:tags</label> <input id="search-tags" class="clj-input"/>
+            <label for="search-sort" class="keyword indented">:sort-by</label>
             <select id="search-sort" class="clj-input clj-select">
                 <option selected="true">:last-added</option>
             </select>
@@ -159,6 +111,64 @@
 
     <div id="find-projects-results">
         loading...
+    </div>
+
+</div>
+
+<div id="show-project-box" class="content-box hidden">
+    <h3>(<span class="fn">ns</span> treajure.show-project-details)</h3>
+
+    <div class="show-project-row">
+        <h3>{</h3>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label indented">:name</h3>
+        <span id="show-name" class="show-content">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label indented">:group-id</h3>
+        <span id="show-group-id" class="show-content">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label indented">:artifact-id</h3>
+        <span id="show-artifact-id" class="show-content">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label indented">:version</h3>
+        <span id="show-version" class="show-content">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label indented">:author</h3>
+        <span id="show-author" class="show-content">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label indented">:homepage</h3>
+        <span id="show-homepage" class="show-content">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label indented">:source-url</h3>
+        <span id="show-source-url" class="show-content">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label indented">:tags</h3>
+        <span id="show-tags" class="show-content">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3 class="keyword show-label indented">:readme-text</h3>
+        <span id="show-readme-text" class="show-content">...</span>
+    </div>
+
+    <div class="show-project-row">
+        <h3>}</h3>
     </div>
 
 </div>

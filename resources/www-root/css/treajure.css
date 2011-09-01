@@ -103,6 +103,9 @@ div.add-field-explanation {
 .keyword {
   font-weight: bold;
   color: #626;
+}
+
+.indented {
   padding-left: 32px;
 }
 
@@ -128,4 +131,22 @@ div.find-projects-item:hover {
 
 span.tag:before {
     content: ":";
+}
+
+div.hidden {
+  display: none;
+}
+
+div#tabbers {
+  margin-right: 100px;
+}
+
+span.tabber {
+  float: right;
+  position: relative;
+  top: 10px;
+  margin: 4px;
+  padding: 2px;
+  cursor: pointer;
+  font-size: 12pt;
 }
