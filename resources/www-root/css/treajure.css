@@ -108,3 +108,7 @@ div.find-projects-item:hover {
   background-color: #DFC;
   cursor: pointer;
 }
+
+span.tag:before {
+    content: ":";
+}

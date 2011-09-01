@@ -13,8 +13,6 @@
   (println (str "Using base url of " base-url))
   (drv/set-base-url! base-url)
 
-  (clear-all-used-projects!)
-
   (fact "Ping pongs"
     (let [{status :status body :body} (drv/GET "/ping")]
       [status body] => [200 "pong"]))
@@ -24,6 +22,7 @@
       [status body] => [404 "404. Problem?"]))
 
   (fact "Can upload a project and retrieve it again as application/clojure"
+    (clear-all-used-projects!)
     (let [project (make-project 1)
           {upload-status :status {new-location :location} :headers} (add-project-clj project)
           {get-status :status body-str :body} (drv/GET new-location accept-clj)
@@ -97,7 +96,7 @@
 
         (let [{redelete-status :status} (drv/DELETE new-location)]
 
-          redelete-status => 404))))
+          redelete-status => 204))))
 
   (fact "we can GET a list of all projects - even if it's an empty list"
     (clear-all-used-projects!)
@@ -166,7 +165,7 @@
     (clear-all-used-projects!)
 
     (let [expected (make-project "matthew")]
-    
+
       (add-project-clj expected)
       (add-project-clj (make-project "andrew"))
 
@@ -177,5 +176,40 @@
         (count (body :results)) => 1
         (get-in body [:results 0 :name]) => (expected :name))))
 
+  (fact "filtering by tags"
+    (clear-all-used-projects!)
+
+    (let [expected-1 (assoc (make-project "matthew") :tags ["t1" "t2"])
+          expected-2 (assoc (make-project "andrew") :tags ["t2" "t3"])]
+
+      (add-project-clj expected-1)
+      (add-project-clj expected-2)
+
+      (let [resp (drv/GET "/api/projects?tag=t2" accept-clj)
+            body (read-string (resp :body))]
+        (resp :status) => 200
+        (count (body :results)) => 2)
+
+      (let [resp (drv/GET "/api/projects?tag=t1" accept-clj)
+            body (read-string (resp :body))]
+        (resp :status) => 200
+        (count (body :results)) => 1
+        (get-in body [:results 0 :name]) => (expected-1 :name))
+
+      (let [resp (drv/GET "/api/projects?tag=t2&tag=t3" accept-clj)
+            body (read-string (resp :body))]
+        (resp :status) => 200
+        (count (body :results)) => 1
+        (get-in body [:results 0 :name]) => (expected-2 :name))))
+
+  (fact "Can't add the same project twice"
+    (clear-all-used-projects!)
+
+    (let [project (make-unique-project)
+          add-1 (add-project-clj project)
+          add-2 (add-project-clj project)]
+
+      (add-1 :status) => 201
+      (add-2 :status) => 409))
 
   (clear-all-used-projects!))

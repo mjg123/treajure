@@ -1,5 +1,6 @@
 (ns cljprj.core
-  (:use [clojure.contrib.string :only [trim]])
+  (:use [clojure.contrib.string :only [trim]]
+        [cljprj.either])
   (:require [cljprj.persistence :as db]))
 
 (def required-fields [:name :group-id :artifact-id])
@@ -35,28 +36,23 @@
   [prj]
   (str "/api/projects/" (prj :group-id) "/" (prj :artifact-id)))
 
-(defn- coords
-  "Create the value to be used in the mongo index.
-As get is always by gid/aid we just need those two things."
-  [gid aid]
-  (str gid " $$$ " aid))
-
-(defn- prj-coords [prj]
-  (coords (prj :group-id) (prj :artifact-id)))
-
 (defn add-project [prj]
   (if (valid-project? prj)
-    (let [prj (clean-project prj)]
-      (db/add-project {:project prj :coords-idx (prj-coords prj)})
-      {:status 201
-       :headers {"location" (make-location-url prj)}
-       :body {:message "yum, thanks"}})
+
+    (let [prj (clean-project prj)
+          [error result] (db/add-project (clean-project prj))]
+      (if result
+        {:status 201
+         :headers {"location" (make-location-url prj)}
+         :body {:message "yum, thanks"}}
+        (make-error 409 error)))
+
     (make-error 400 "uploaded project must have at least #{ :name :group-id :artifact-id }")))
 
 (defn get-project
   "retrieves a single project"
   [gid aid]
-  (let [result (db/get-project (coords gid aid))]
+  (let [result (db/get-project gid aid)]
     (if result
       {:body result}
       no-such-project)))
@@ -64,7 +60,7 @@ As get is always by gid/aid we just need those two things."
 (defn rm-project
   "removes a project from the service"
   [gid aid]
-  (let [result (db/rm-project (coords gid aid))]
+  (let [result (db/rm-project gid aid)]
     (if result
       {:status 204 :body nil}
       no-such-project)))
@@ -74,10 +70,10 @@ As get is always by gid/aid we just need those two things."
   [prj]
   (assoc prj :href (make-location-url prj)))
 
-(defn list-projects [{name "name" tags "tags"}]
+(defn list-projects [{name "name" tag "tag"}]
 
   (if (not-any? true? [(nil? name) (string? name)])
     (make-error 400 "name must be specified 0 or 1 times")
 
-    (let [results (db/list-projects name)]
+    (let [results (db/list-projects name tag)]
       {:body {:results (apply vector (map attach-href (reverse results)))}})))
