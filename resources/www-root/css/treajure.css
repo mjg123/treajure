@@ -45,13 +45,18 @@ a:hover {
 }
 
 .form-label {
-    width: 200px;
-    vertical-align: top;
+  width: 200px;
+  vertical-align: top;
 }
 
 .show-label {
-    width: 150px;
-    vertical-align: top;
+  width: 150px;
+  vertical-align: top;
+  display: table-cell;  /* I am not sure at all about table-cell here, but it works in chrome and FF */
+}
+
+span.show-content {
+  display: table-cell; /* I am not sure at all about table-cell here, but it works in chrome and FF */
 }
 
 .fake-link {
