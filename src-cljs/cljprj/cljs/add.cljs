@@ -90,6 +90,20 @@
     (log (str "Loading from " uri))
     (xhr/send uri load-callback "GET" nil ajacs-headers)))
 
+;;;;;;;;;;;;;;;;; SHOW THE UI BOXES BUSINESS
+
+(defn show! [ui-view]
+
+  (condp = ui-view
+    :add-project (do
+                   (classes/enable (dom/getElement "add-project-box") "hidden" false)
+                   (classes/enable (dom/getElement "show-project-box") "hidden" true)
+                   (classes/enable (dom/getElement "search-box") "hidden" true))
+    :search (do
+              (classes/enable (dom/getElement "add-project-box") "hidden" true)
+              (classes/enable (dom/getElement "show-project-box") "hidden" false)
+              (classes/enable (dom/getElement "search-box") "hidden" false))))
+
 ;;;;;;;;; UPLOAD A NEW PROJECT BUSINESS
 
 (defn clear-add-form []
@@ -99,7 +113,8 @@
 
 (defn project-upload-success [new-locn]
   (clear-add-form)
-  (load-individual-project-from new-locn))
+  (load-individual-project-from new-locn)
+  (show! :search))
 
 (defn submit-callback [e]
   (let [resp (un-xhr e)
@@ -178,20 +193,6 @@
 
 (defn search-if-enter [e]
   (when (= 13 (.keyCode e)) (do-search)))
-
-;;;;;;;;;;;;;;;;; SHOW THE UI BOXES BUSINESS
-
-(defn show! [ui-view]
-
-  (condp = ui-view
-    :add-project (do
-                   (classes/enable (dom/getElement "add-project-box") "hidden" false)
-                   (classes/enable (dom/getElement "show-project-box") "hidden" true)
-                   (classes/enable (dom/getElement "search-box") "hidden" true))
-    :search (do
-              (classes/enable (dom/getElement "add-project-box") "hidden" true)
-              (classes/enable (dom/getElement "show-project-box") "hidden" false)
-              (classes/enable (dom/getElement "search-box") "hidden" false))))
 
 ;;;;;;;;;;;;;;;;;; START THE APP (BUSINESS)
 
