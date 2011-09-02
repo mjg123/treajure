@@ -143,9 +143,9 @@
     (events/listen div "click" #(load-individual-project-from (prj :href)))
 
     (.appendChild div (dom/createDom "span" {} "{ "))
-    (.appendChild div (dom/createDom "span" "keyword indented" ":name "))
+    (.appendChild div (dom/createDom "span" "keyword indented" "name "))
     (.appendChild div (dom/createDom "span" {} (prj :name)))
-    (.appendChild div (dom/createDom "span" "keyword indented" ":tags "))
+    (.appendChild div (dom/createDom "span" "keyword indented" "tags "))
 
     (.appendChild div (dom/createDom "span" {} "[ "))
 

@@ -105,6 +105,10 @@ div.add-field-explanation {
   color: #626;
 }
 
+.keyword:before {
+  content: ":";
+}
+
 .indented {
   padding-left: 32px;
 }
