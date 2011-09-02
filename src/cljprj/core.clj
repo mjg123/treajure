@@ -1,6 +1,7 @@
 (ns cljprj.core
   (:use [clojure.contrib.string :only [trim]]
-        [cljprj.either])
+        [cljprj.either]
+        [clojure.set :only [difference]])
   (:require [cljprj.persistence :as db]))
 
 (def required-fields [:name :group-id :artifact-id])
@@ -18,6 +19,19 @@
     (map? prj-data)
     (every? #(contains? prj-data %) required-fields)
     (every? #(not= "" (trim (prj-data %))) required-fields)))
+
+(defn empty-fields
+  "Returns the keys of the fields that don't have values"
+  [prj-data]
+  (map first (filter #(= "" (second %))
+                     prj-data)))
+  
+(defn missing-fields
+  "Returns the fields that should be added to make the project valid"
+  [prj-data]
+  (if (map? prj-data)
+    (difference (set required-fields) (set (empty-fields prj-data)))
+    required-fields))
 
 (defn clean-project
   "Removes unwanted fields from the project"
@@ -47,7 +61,7 @@
          :body {:message "yum, thanks"}}
         (make-error 409 error)))
 
-    (make-error 400 "uploaded project must have at least #{ :name :group-id :artifact-id }")))
+    (make-error 400 (str "uploaded project must have at least #{ :name :group-id :artifact-id }, you were missing" (missing-fields prj)))))
 
 (defn get-project
   "retrieves a single project"
