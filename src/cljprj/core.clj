@@ -20,17 +20,16 @@
     (every? #(contains? prj-data %) required-fields)
     (every? #(not= "" (trim (prj-data %))) required-fields)))
 
-(defn empty-fields
+(defn fields-with-values
   "Returns the keys of the fields that don't have values"
   [prj-data]
-  (map first (filter #(= "" (second %))
-                     prj-data)))
+  (map first (filter #(not= "" (second %)) prj-data)))
   
 (defn missing-fields
   "Returns the fields that should be added to make the project valid"
   [prj-data]
   (if (map? prj-data)
-    (difference (set required-fields) (set (empty-fields prj-data)))
+    (difference (set required-fields) (set (fields-with-values prj-data)))
     required-fields))
 
 (defn clean-project
