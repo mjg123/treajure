@@ -68,6 +68,9 @@
     (= "" url) ""
     :else (str "<a href='" url "'>" url "</a>")))
 
+(defn spanify [class text]
+  (str "<span class=\"" class "\">" text "</span>"))
+
 (defn load-callback [e]
   (let [resp (un-xhr e)
         prj (resp :body)]
@@ -79,7 +82,7 @@
     (set-html "show-author" (prj :author))
     (set-html "show-homepage" (linkify (prj :homepage)))
     (set-html "show-source-url" (linkify (prj :source-url)))
-    (set-html "show-tags" (str "[" (apply str (interpose " " (prj :tags))) "]"))
+    (set-html "show-tags" (str "[" (apply str (interpose " " (map #(spanify "tag" %) (prj :tags)))) "]"))
     (set-html "show-readme-text" (prj :readme-text))))
 
 (defn load-individual-project-from [location]
