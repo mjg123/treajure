@@ -39,7 +39,7 @@
     (reduce
       #(assoc %1 (first %2)
          (if (string? (second %2))
-           (trim (.replaceAll (second %2) "\"" "'"))  ;(
+           (trim (.replaceAll (second %2) "\"" "'")) ;(
            (second %2)))
       {}
       only-valid-fields)))
@@ -73,6 +73,7 @@
 (defn rm-project
   "removes a project from the service"
   [gid aid]
+
   (let [result (db/rm-project gid aid)]
     (if result
       {:status 204 :body nil}

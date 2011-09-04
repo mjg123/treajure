@@ -6,7 +6,14 @@
        :doc "Store which projects have been created to we can remove them later"}
   used-projects (atom #{}))
 
+(def token (System/getenv "TREAJURE_TOKEN"))
+
 (defn clear-project
+  "Remove a project"
+  [prj]
+  (drv/DELETE (str "/api/projects/" (prj :group-id) "/" (prj :artifact-id) "?token=" token)))
+
+(defn clear-project-without-token
   "Remove a project"
   [prj]
   (drv/DELETE (str "/api/projects/" (prj :group-id) "/" (prj :artifact-id))))
