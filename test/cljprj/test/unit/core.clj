@@ -61,9 +61,13 @@
 (facts "Facts about adding projects"
        (def valid-response [() ()])
        (fact "valid project is created"
-             (binding [db/add-project (fn [prj] valid-response)]
-               (add-project min-prj) => (contains {:status 201})))
+             (add-project ...prj...) => (contains {:status 201})
+             (provided
+              (valid-project? ...prj...) => true
+              (clean-project ...prj...) => ...prj...
+              (db/add-project ...prj...) => [() ()]))
        (def error-response ["error"])
        (fact "Project that doesn't have required attributes should respond bad request"
-             (binding [db/add-project (fn [prj] error-response)]
-               (add-project {}) => (contains {:status 400}))))
+             (add-project ...prj...) => (contains {:status 400})
+             (provided
+              (valid-project? ...prj...) => false)))

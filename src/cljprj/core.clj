@@ -51,7 +51,6 @@
 
 (defn add-project [prj]
   (if (valid-project? prj)
-
     (let [prj (clean-project prj)
           [error result] (db/add-project (clean-project prj))]
       (if result
