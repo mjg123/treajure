@@ -1,5 +1,5 @@
 (ns cljprj.core
-  (:use [clojure.contrib.string :only [trim]]
+  (:use [clojure.contrib.string :only [trim, lower-case]]
         [cljprj.either]
         [clojure.set :only [difference]])
   (:require [cljprj.persistence :as db]))
@@ -49,10 +49,18 @@
   [prj]
   (str "/api/projects/" (prj :group-id) "/" (prj :artifact-id)))
 
+(defn lowercase-tags
+  "Make the tags in the project lower case"
+  [prj]
+  (if (seq (prj :tags))
+    (assoc prj :tags (map lower-case (prj :tags)))
+    prj))
+
 (defn add-project [prj]
   (if (valid-project? prj)
-    (let [prj (clean-project prj)
-          [error result] (db/add-project (clean-project prj))]
+    (let [prj (-> (clean-project prj)
+                  (lowercase-tags))
+          [error result] (db/add-project prj)]
       (if result
         {:status 201
          :headers {"location" (make-location-url prj)}

@@ -64,6 +64,9 @@
              (add-project min-prj) => (contains {:status 201})
              (provided
               (db/add-project min-prj) => valid-response))
-       (def error-response ["error"])
-       (fact "Project that doesn't have required attributes should respond bad request"
-             (add-project (dissoc min-prj :name)) => (contains {:status 400})))
+       (fact "project that doesn't have required attributes should respond bad request"
+             (add-project (dissoc min-prj :name)) => (contains {:status 400}))
+       (fact "tags should be lower case"
+             (add-project (assoc min-prj :tags ["TAG"])) => (contains {:status 201})
+             (provided
+              (db/add-project (checker [actual] (= (actual :tags) ["tag"]))) => valid-response)))
