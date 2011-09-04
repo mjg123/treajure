@@ -1,4 +1,4 @@
-(ns cljprj.test.unit.core
+ (ns cljprj.test.unit.core
   (:use [midje.sweet]
         [cljprj.core :only [valid-project? clean-project missing-fields add-project]])
   (:require [cljprj.persistence :as db]))
@@ -62,4 +62,8 @@
        (def valid-response [() ()])
        (fact "valid project is created"
              (binding [db/add-project (fn [prj] valid-response)]
-               (add-project min-prj) => (contains {:status 201}))))
+               (add-project min-prj) => (contains {:status 201})))
+       (def error-response ["error"])
+       (fact "Project that doesn't have required attributes should respond bad request"
+             (binding [db/add-project (fn [prj] error-response)]
+               (add-project {}) => (contains {:status 400}))))
