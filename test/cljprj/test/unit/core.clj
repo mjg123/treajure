@@ -1,6 +1,6 @@
 (ns cljprj.test.unit.core
   (:use [midje.sweet]
-        [cljprj.core :only [valid-project? clean-project]]))
+        [cljprj.core :only [valid-project? clean-project missing-fields]]))
 
 (def min-prj {:name "name" :group-id "gid" :artifact-id "aid"})
 
@@ -32,6 +32,16 @@
     (valid-project? (assoc min-prj :name " ")) => false
     (valid-project? (assoc min-prj :group-id "\t")) => false
     (valid-project? (assoc min-prj :artifact-id "  \t   ")) => false))
+
+(facts "Facts about missing fields"
+  (fact "when one field is present the remaining two are missing"
+        (missing-fields {:name "name"}) => #{:group-id :artifact-id})
+
+  (fact "when the project isn't a map all the fields are missing"
+        (missing-fields '()) => #{:group-id :artifact-id :name})
+
+  (fact "when all required fields are present there are no missing fields"
+        (missing-fields min-prj) => #{}))
 
 (facts "Facts about cleaning projects"
 

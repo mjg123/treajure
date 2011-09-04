@@ -30,7 +30,7 @@
   [prj-data]
   (if (map? prj-data)
     (difference (set required-fields) (set (fields-with-values prj-data)))
-    required-fields))
+    (set required-fields)))
 
 (defn clean-project
   "Removes unwanted fields from the project"
