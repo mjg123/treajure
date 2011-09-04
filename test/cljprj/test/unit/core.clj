@@ -1,6 +1,7 @@
 (ns cljprj.test.unit.core
   (:use [midje.sweet]
-        [cljprj.core :only [valid-project? clean-project missing-fields]]))
+        [cljprj.core :only [valid-project? clean-project missing-fields add-project]])
+  (:require [cljprj.persistence :as db]))
 
 (def min-prj {:name "name" :group-id "gid" :artifact-id "aid"})
 
@@ -55,4 +56,10 @@
     (contains? (clean-project (assoc min-prj :HAHAHA "   hello   ")) :HAHAHA) => false)
 
   (fact "tags-as-vector is valid"
-    ((clean-project (assoc min-prj :tags [:t1 :t2])) :tags) => [:t1 :t2]))
+        ((clean-project (assoc min-prj :tags [:t1 :t2])) :tags) => [:t1 :t2]))
+
+(facts "Facts about adding projects"
+       (def valid-response [() ()])
+       (fact "valid project is created"
+             (binding [db/add-project (fn [prj] valid-response)]
+               (add-project min-prj) => (contains {:status 201}))))
