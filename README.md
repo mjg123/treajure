@@ -29,11 +29,11 @@ against with an environment var called `BASE_URL`.
 
 It is possible to specify which tests to run by specifying the whole namespace, ie:
 
-    lein midge cljprj.test.unit
+    lein midje cljprj.test.unit
 
 or
 
-    lein midge cljprj.test.acceptance
+    lein midje cljprj.test.acceptance
 
 ## License
 

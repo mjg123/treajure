@@ -1,8 +1,10 @@
 (ns cljprj.cljs.add
   (:require [cljs.reader :as reader]
             [goog.dom :as dom]
+            [goog.dom.classes :as classes]
             [goog.date :as date]
             [goog.events :as events]
+            [goog.events.EventType :as event-type]
             [goog.Uri :as uri]
             [goog.net.XhrIo :as xhr]
             [clojure.string :as s]))
@@ -60,6 +62,15 @@
 
 ;;;;;;;;; SHOW AN INDIVIDUAL PROJECT BUSINESS
 
+(defn linkify [url]
+  (cond
+    (nil? url) ""
+    (= "" url) ""
+    :else (str "<a href='" url "'>" url "</a>")))
+
+(defn spanify [class text]
+  (str "<span class=\"" class "\">" text "</span>"))
+
 (defn load-callback [e]
   (let [resp (un-xhr e)
         prj (resp :body)]
@@ -69,8 +80,9 @@
     (set-html "show-artifact-id" (prj :artifact-id))
     (set-html "show-version" (prj :version))
     (set-html "show-author" (prj :author))
-    (set-html "show-source-url" (prj :source-url))
-    (set-html "show-tags" (str "[" (apply str (interpose " " (prj :tags))) "]"))
+    (set-html "show-homepage" (linkify (prj :homepage)))
+    (set-html "show-source-url" (linkify (prj :source-url)))
+    (set-html "show-tags" (str "[" (apply str (interpose " " (map #(spanify "tag" %) (prj :tags)))) "]"))
     (set-html "show-readme-text" (prj :readme-text))))
 
 (defn load-individual-project-from [location]
@@ -78,18 +90,31 @@
     (log (str "Loading from " uri))
     (xhr/send uri load-callback "GET" nil ajacs-headers)))
 
+;;;;;;;;;;;;;;;;; SHOW THE UI BOXES BUSINESS
+
+(defn show! [ui-view]
+
+  (condp = ui-view
+    :add-project (do
+                   (classes/enable (dom/getElement "add-project-box") "hidden" false)
+                   (classes/enable (dom/getElement "show-project-box") "hidden" true)
+                   (classes/enable (dom/getElement "search-box") "hidden" true))
+    :search (do
+              (classes/enable (dom/getElement "add-project-box") "hidden" true)
+              (classes/enable (dom/getElement "show-project-box") "hidden" false)
+              (classes/enable (dom/getElement "search-box") "hidden" false))))
+
 ;;;;;;;;; UPLOAD A NEW PROJECT BUSINESS
 
 (defn clear-add-form []
-  (doall
-    (map
-      clear-elem
-      ["add-name" "add-group-id" "add-artifact-id" "add-author"
-       "add-version" "add-source-url" "add-readme-text" "add-tags"])))
+  (doseq [elem ["add-name" "add-group-id" "add-artifact-id" "add-author" "add-homepage"
+                "add-version" "add-source-url" "add-readme-text" "add-tags"]]
+    (clear-elem elem)))
 
 (defn project-upload-success [new-locn]
   (clear-add-form)
-  (load-individual-project-from new-locn))
+  (load-individual-project-from new-locn)
+  (show! :search))
 
 (defn submit-callback [e]
   (let [resp (un-xhr e)
@@ -108,6 +133,7 @@
    :author (dom-val "add-author")
    :version (dom-val "add-version")
    :source-url (dom-val "add-source-url")
+   :homepage (dom-val "add-homepage")
    :readme-text (dom-val "add-readme-text")
    :tags (apply vector (remove #(= % "") (.split (dom-val "add-tags") whitespace-regex)))})
 
@@ -135,9 +161,9 @@
     (events/listen div "click" #(load-individual-project-from (prj :href)))
 
     (.appendChild div (dom/createDom "span" {} "{ "))
-    (.appendChild div (dom/createDom "span" "keyword" ":name "))
+    (.appendChild div (dom/createDom "span" "keyword indented" "name "))
     (.appendChild div (dom/createDom "span" {} (prj :name)))
-    (.appendChild div (dom/createDom "span" "keyword" ":tags "))
+    (.appendChild div (dom/createDom "span" "keyword indented" "tags "))
 
     (.appendChild div (dom/createDom "span" {} "[ "))
 
@@ -165,18 +191,25 @@
     (xhr/send search-url show-results-callback "GET" nil ajacs-headers)))
 
 
+(defn search-if-enter [e]
+  (when (= 13 (.keyCode e)) (do-search)))
+
 ;;;;;;;;;;;;;;;;;; START THE APP (BUSINESS)
 
 (defn start-app []
   (log :startup)
   (do-search)
 
-  (events/listen (dom/getElement "add-submit")
-    "click"
-    submit-event)
+  (events/listen (dom/getElement "add-submit") event-type/CLICK submit-event)
 
-  (events/listen (dom/getElement "search-submit")
-    "click"
-    do-search))
+  (events/listen (dom/getElement "search-submit") event-type/CLICK do-search)
+  (events/listen (dom/getElement "search-name") event-type/KEYUP search-if-enter)
+  (events/listen (dom/getElement "search-tags") event-type/KEYUP search-if-enter)
+  (events/listen (dom/getElement "search-sort") event-type/CHANGE do-search)
+
+  (events/listen (dom/getElement "search-tabber") event-type/CLICK #(show! :search))
+  (events/listen (dom/getElement "add-tabber") event-type/CLICK #(show! :add-project))
+
+  (show! :search))
 
 (start-app)

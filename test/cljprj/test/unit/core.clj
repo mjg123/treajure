@@ -1,6 +1,7 @@
-(ns cljprj.test.unit.core
+ (ns cljprj.test.unit.core
   (:use [midje.sweet]
-        [cljprj.core :only [valid-project? clean-project]]))
+        [cljprj.core :only [valid-project? clean-project missing-fields add-project]])
+  (:require [cljprj.persistence :as db]))
 
 (def min-prj {:name "name" :group-id "gid" :artifact-id "aid"})
 
@@ -33,6 +34,16 @@
     (valid-project? (assoc min-prj :group-id "\t")) => false
     (valid-project? (assoc min-prj :artifact-id "  \t   ")) => false))
 
+(facts "Facts about missing fields"
+  (fact "when one field is present the remaining two are missing"
+        (missing-fields {:name "name"}) => #{:group-id :artifact-id})
+
+  (fact "when the project isn't a map all the fields are missing"
+        (missing-fields '()) => #{:group-id :artifact-id :name})
+
+  (fact "when all required fields are present there are no missing fields"
+        (missing-fields min-prj) => #{}))
+
 (facts "Facts about cleaning projects"
 
   (fact "whitespace is trimmed"
@@ -45,4 +56,14 @@
     (contains? (clean-project (assoc min-prj :HAHAHA "   hello   ")) :HAHAHA) => false)
 
   (fact "tags-as-vector is valid"
-    ((clean-project (assoc min-prj :tags [:t1 :t2])) :tags) => [:t1 :t2]))
+        ((clean-project (assoc min-prj :tags [:t1 :t2])) :tags) => [:t1 :t2]))
+
+(facts "Facts about adding projects"
+       (def valid-response [() ()])
+       (fact "valid project is created"
+             (add-project min-prj) => (contains {:status 201})
+             (provided
+              (db/add-project min-prj) => valid-response))
+       (def error-response ["error"])
+       (fact "Project that doesn't have required attributes should respond bad request"
+             (add-project (dissoc min-prj :name)) => (contains {:status 400})))

@@ -10,6 +10,11 @@
 
 (facts "cljprj acceptance tests"
 
+  (fact "security token is available"
+    (when (nil? (System/getenv "TREAJURE_TOKEN"))
+      (println "HEY YOU: You have to set the environment var TREAJURE_TOKEN"))
+    (System/getenv "TREAJURE_TOKEN") => #(not (nil? %)))
+
   (println (str "Using base url of " base-url))
   (drv/set-base-url! base-url)
 
@@ -88,15 +93,27 @@
       upload-status => 201
       get-status => 200
 
-      (let [{delete-status :status} (drv/DELETE new-location)
+      (let [{delete-status :status} (clear-project project)
             {get-status :status} (drv/GET new-location accept-clj)]
 
         delete-status => 204
         get-status => 404
 
-        (let [{redelete-status :status} (drv/DELETE new-location)]
+        (let [{redelete-status :status} (clear-project project)]
 
           redelete-status => 204))))
+
+  (fact "DELETE a project after upload needs the token"
+    (let [project (make-unique-project)
+          {upload-status :status {new-location :location} :headers} (add-project-clj project)]
+
+      upload-status => 201
+
+      (let [{delete-status :status} (clear-project-without-token project)
+            {get-status :status} (drv/GET new-location accept-clj)]
+
+        delete-status => 403
+        get-status => 200 )))
 
   (fact "we can GET a list of all projects - even if it's an empty list"
     (clear-all-used-projects!)

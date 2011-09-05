@@ -1,10 +1,11 @@
 (ns cljprj.core
   (:use [clojure.contrib.string :only [trim]]
-        [cljprj.either])
+        [cljprj.either]
+        [clojure.set :only [difference]])
   (:require [cljprj.persistence :as db]))
 
 (def required-fields [:name :group-id :artifact-id])
-(def all-fields (concat required-fields [:author :version :source-url :readme-text :tags]))
+(def all-fields (concat required-fields [:author :version :homepage :source-url :readme-text :tags]))
 
 (defn make-error [code message]
   {:status code :body {:error message}})
@@ -19,6 +20,18 @@
     (every? #(contains? prj-data %) required-fields)
     (every? #(not= "" (trim (prj-data %))) required-fields)))
 
+(defn fields-with-values
+  "Returns the keys of the fields that don't have values"
+  [prj-data]
+  (map first (filter #(not= "" (second %)) prj-data)))
+  
+(defn missing-fields
+  "Returns the fields that should be added to make the project valid"
+  [prj-data]
+  (if (map? prj-data)
+    (difference (set required-fields) (set (fields-with-values prj-data)))
+    (set required-fields)))
+
 (defn clean-project
   "Removes unwanted fields from the project"
   [prj]
@@ -26,7 +39,7 @@
     (reduce
       #(assoc %1 (first %2)
          (if (string? (second %2))
-           (trim (.replaceAll (second %2) "\"" "'"))
+           (trim (.replaceAll (second %2) "\"" "'")) ;(
            (second %2)))
       {}
       only-valid-fields)))
@@ -38,7 +51,6 @@
 
 (defn add-project [prj]
   (if (valid-project? prj)
-
     (let [prj (clean-project prj)
           [error result] (db/add-project (clean-project prj))]
       (if result
@@ -47,7 +59,7 @@
          :body {:message "yum, thanks"}}
         (make-error 409 error)))
 
-    (make-error 400 "uploaded project must have at least #{ :name :group-id :artifact-id }")))
+    (make-error 400 (str "uploaded project must have at least #{ :name :group-id :artifact-id }, you were missing" (missing-fields prj)))))
 
 (defn get-project
   "retrieves a single project"
@@ -60,6 +72,7 @@
 (defn rm-project
   "removes a project from the service"
   [gid aid]
+
   (let [result (db/rm-project gid aid)]
     (if result
       {:status 204 :body nil}
