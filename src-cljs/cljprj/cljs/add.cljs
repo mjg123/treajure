@@ -74,7 +74,7 @@
                    (classes/enable (dom/getElement "search-box") "hidden" true))
     :search (do
               (classes/enable (dom/getElement "add-project-box") "hidden" true)
-              (if (not= "nil" (get-html-contents "show-name"))
+              (if (= "true" (get-html-contents "show-project-present"))
                 (classes/enable (dom/getElement "show-project-box") "hidden" false))
               (classes/enable (dom/getElement "search-box") "hidden" false))))
 
@@ -93,6 +93,7 @@
   (let [resp (un-xhr e)
         prj (resp :body)]
 
+    (set-html "show-project-present" "true")
     (set-html "show-name" (prj :name))
     (set-html "show-group-id" (prj :group-id))
     (set-html "show-artifact-id" (prj :artifact-id))
