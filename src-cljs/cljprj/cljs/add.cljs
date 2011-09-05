@@ -31,6 +31,9 @@
 (defn set-html [elem-id val]
   (set! (.innerHTML (dom/getElement elem-id)) val))
 
+(defn get-html-contents [elem-id]
+  (.textContent (dom/getElement elem-id)))
+
 (def ajacs-headers
   (doto (js-obj)
     (aset "Content-Type" "application/clojure")
@@ -60,6 +63,21 @@
     (.setParameterValues uri p-name (apply array p-vals))
     uri))
 
+;;;;;;;;;;;;;;;;; SHOW THE UI BOXES BUSINESS
+
+(defn show! [ui-view]
+
+  (condp = ui-view
+    :add-project (do
+                   (classes/enable (dom/getElement "add-project-box") "hidden" false)
+                   (classes/enable (dom/getElement "show-project-box") "hidden" true)
+                   (classes/enable (dom/getElement "search-box") "hidden" true))
+    :search (do
+              (classes/enable (dom/getElement "add-project-box") "hidden" true)
+              (if (not= "nil" (get-html-contents "show-name"))
+                (classes/enable (dom/getElement "show-project-box") "hidden" false))
+              (classes/enable (dom/getElement "search-box") "hidden" false))))
+
 ;;;;;;;;; SHOW AN INDIVIDUAL PROJECT BUSINESS
 
 (defn linkify [url]
@@ -83,26 +101,13 @@
     (set-html "show-homepage" (linkify (prj :homepage)))
     (set-html "show-source-url" (linkify (prj :source-url)))
     (set-html "show-tags" (str "[" (apply str (interpose " " (map #(spanify "tag" %) (prj :tags)))) "]"))
-    (set-html "show-readme-text" (prj :readme-text))))
+    (set-html "show-readme-text" (prj :readme-text))
+    (show! :search)))
 
 (defn load-individual-project-from [location]
   (let [uri (goog.Uri. location)]
     (log (str "Loading from " uri))
     (xhr/send uri load-callback "GET" nil ajacs-headers)))
-
-;;;;;;;;;;;;;;;;; SHOW THE UI BOXES BUSINESS
-
-(defn show! [ui-view]
-
-  (condp = ui-view
-    :add-project (do
-                   (classes/enable (dom/getElement "add-project-box") "hidden" false)
-                   (classes/enable (dom/getElement "show-project-box") "hidden" true)
-                   (classes/enable (dom/getElement "search-box") "hidden" true))
-    :search (do
-              (classes/enable (dom/getElement "add-project-box") "hidden" true)
-              (classes/enable (dom/getElement "show-project-box") "hidden" false)
-              (classes/enable (dom/getElement "search-box") "hidden" false))))
 
 ;;;;;;;;; UPLOAD A NEW PROJECT BUSINESS
 
@@ -113,8 +118,7 @@
 
 (defn project-upload-success [new-locn]
   (clear-add-form)
-  (load-individual-project-from new-locn)
-  (show! :search))
+  (load-individual-project-from new-locn))
 
 (defn submit-callback [e]
   (let [resp (un-xhr e)
