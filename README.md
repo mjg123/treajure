@@ -37,6 +37,6 @@ or
 
 ## License
 
-Copyright (C) 2011 Matthew Gilliard (mjg123) & Andrew Jones (ahjones)
+Copyright © 2011 Matthew Gilliard (mjg123) & Andrew Jones (ahjones)
 
 Distributed under the Eclipse Public License, the same as Clojure.
