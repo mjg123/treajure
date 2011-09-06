@@ -186,7 +186,9 @@
 
 (defn show-results-callback [e]
   (let [resp (un-xhr e)]
-    (doall (map show-result! (get-in resp [:body :results])))))
+    (condp = (resp :status)
+      200 (doall (map show-result! (get-in resp [:body :results])))
+      (msg :error (str "Unexpected problem with search: " (get-in resp [:body :error]))))))
 
 (defn do-search []
   (clear-search-results!)
