@@ -91,10 +91,19 @@
   [prj]
   (assoc prj :href (make-location-url prj)))
 
+(defn lower-case-tag
+  "Make tag lowercase"
+  [tag]
+  (cond
+   (nil? tag) tag
+   (vector? tag) (vec (map lower-case tag))
+   (string? tag) (lower-case tag)
+   :else tag))
+
 (defn list-projects [{name "name" tag "tag"}]
 
   (if (not-any? true? [(nil? name) (string? name)])
     (make-error 400 "name must be specified 0 or 1 times")
 
-    (let [results (db/list-projects name (if tag (lower-case tag) tag))]
+    (let [results (db/list-projects name (lower-case-tag tag))]
       {:body {:results (apply vector (map attach-href (reverse results)))}})))
