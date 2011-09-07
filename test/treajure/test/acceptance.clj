@@ -237,12 +237,7 @@
           (let [resp (drv/GET "/api/projects?tag=limit-tag" accept-clj)
                 body (read-string (resp :body))]
             (count (body :results)) => 5
-            (get-in body [:results 0 :name]) => (:name (nth projects 5))
-            (get-in body [:results 1 :name]) => (:name (nth projects 4))
-            (get-in body [:results 2 :name]) => (:name (nth projects 3))
-            (get-in body [:results 3 :name]) => (:name (nth projects 2))
-            (get-in body [:results 4 :name]) => (:name (nth projects 1))
-            )
-          ))
+            (doseq [n (range 1 6)]
+              (get-in body [:results (- n 1) :name]) => (:name (nth projects (- 6 n)))))))
 
   (clear-all-used-projects!))
