@@ -229,4 +229,14 @@
       (add-1 :status) => 201
       (add-2 :status) => 409))
 
+  (fact "search results are limited"
+        (clear-all-used-projects!)
+        (let [projects (map #(assoc (make-project %) :tags ["limit-tag"]) (range 0 6))]
+          (doseq [prj projects] (add-project-clj prj))
+
+          (let [resp (drv/GET "/api/projects?tag=limit-tag" accept-clj)
+                body (read-string (resp :body))]
+            (count (body :results)) => 5)
+          ))
+
   (clear-all-used-projects!))

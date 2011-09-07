@@ -55,4 +55,8 @@
           (assoc-name-query name)
           (assoc-tags-query tag))]
 
-    (map :project (fetch :projects :where where-clause :limit 5))))
+    (map :project (reverse
+                   (fetch :projects
+                          :where where-clause
+                          :sort {:$natural -1}
+                          :limit 5)))))
