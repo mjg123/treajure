@@ -1,6 +1,6 @@
-(ns cljprj.persistence
+(ns treajure.persistence
   (:use [somnium.congomongo]
-        [cljprj.either]))
+        [treajure.either]))
 
 ;; copied from http://thecomputersarewinning.com/post/clojure-heroku-noir-mongo
 (defn- split-mongo-url [url]
@@ -10,7 +10,7 @@
       (zipmap [:match :user :pass :host :port :db] (re-groups matcher))))) ;; Construct an options map.
 
 ;; MONGOHQ_URL is provided automagically on Heroku
-(def default-mongo-connection "mongodb://cljprj:cljprj@localhost:27017/cljprj")
+(def default-mongo-connection "mongodb://treajure:treajure@localhost:27017/treajure")
 
 (let [config (split-mongo-url (get (System/getenv) "MONGOHQ_URL" default-mongo-connection))]
   (mongo! :db (:db config) :host (:host config) :port (Integer. (:port config)))

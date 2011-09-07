@@ -1,9 +1,9 @@
-(ns cljprj.rest
+(ns treajure.rest
   (:use compojure.core)
-  (:use cljprj.rest-lib)
+  (:use treajure.rest-lib)
   (:require
     [compojure.route :as route]
-    [cljprj.core :as core]))
+    [treajure.core :as core]))
 
 (def path-regex #"[^/]+") ; compojure will split paths on "." as well as "/"...
 
@@ -11,7 +11,7 @@
 (def auth-error {:status 403 :body "unauthorized"})
 (println (str "Auth token is <<" auth-token ">>"))
 
-(defroutes cljprj-routes
+(defroutes treajure-routes
   (GET "/ping" [:as req] "pong")
 
   (GET "/api/projects" [:as req]

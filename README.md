@@ -1,11 +1,11 @@
-# cljprj
+# treajure
 
 A Clojure Project
 
 ## Usage
 
     lein deps # if it's the first time
-    lein run -m cljprj.web
+    lein run -m treajure.web
 
     lein ring server-headless 8080
 
@@ -13,7 +13,7 @@ This will run on port 8080.  You can override that with an environment var calle
 
 You will need mongodb running, the default connection string is:
 
-    mongodb://cljprj:cljprj@localhost:27017/cljprj
+    mongodb://treajure:treajure@localhost:27017/treajure
 
 So your mongo will need to be running on that port with that user available.  You can override the default connection
 string by setting an environment variable `MONGOHQ_URL` to whatever you want (user/pass is mandatory though).
@@ -29,11 +29,11 @@ against with an environment var called `BASE_URL`.
 
 It is possible to specify which tests to run by specifying the whole namespace, ie:
 
-    lein midje cljprj.test.unit
+    lein midje treajure.test.unit
 
 or
 
-    lein midje cljprj.test.acceptance
+    lein midje treajure.test.acceptance
 
 ## License
 

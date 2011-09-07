@@ -1,4 +1,4 @@
-(ns cljprj.rest-lib
+(ns treajure.rest-lib
   (:use [clojure.contrib.string :only [split]])
   (:require [clojure.contrib.json :as json]))
 

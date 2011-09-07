@@ -1,8 +1,8 @@
-(ns cljprj.core
+(ns treajure.core
   (:use [clojure.contrib.string :only [trim, lower-case]]
-        [cljprj.either]
+        [treajure.either]
         [clojure.set :only [difference]])
-  (:require [cljprj.persistence :as db]))
+  (:require [treajure.persistence :as db]))
 
 (def required-fields [:name :group-id :artifact-id])
 (def all-fields (concat required-fields [:author :version :homepage :source-url :readme-text :tags]))

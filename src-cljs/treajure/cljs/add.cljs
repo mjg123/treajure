@@ -1,4 +1,4 @@
-(ns cljprj.cljs.add
+(ns treajure.cljs.add
   (:require [cljs.reader :as reader]
             [goog.dom :as dom]
             [goog.dom.classes :as classes]

@@ -1,7 +1,7 @@
- (ns cljprj.test.unit.core
+ (ns treajure.test.unit.core
   (:use [midje.sweet]
-        [cljprj.core :only [valid-project? clean-project missing-fields add-project]])
-  (:require [cljprj.persistence :as db]))
+        [treajure.core :only [valid-project? clean-project missing-fields add-project]])
+  (:require [treajure.persistence :as db]))
 
 (def min-prj {:name "name" :group-id "gid" :artifact-id "aid"})
 

@@ -1,4 +1,4 @@
-(ns cljprj.either)
+(ns treajure.either)
 
 ;; pretty straightforward.
 ;; see http://blog.robert-campbell.com/borrowing-haskells-either-for-clojure-error-h

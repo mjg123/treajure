@@ -1,1 +1,1 @@
-web: lein run -m cljprj.web
+web: lein run -m treajure.web

@@ -1,14 +1,14 @@
-(ns cljprj.test.acceptance
+(ns treajure.test.acceptance
   (:use [midje.sweet]
-        [cljprj.test.cljprj-driver])
-  (:require [cljprj.test.rest-driver.rest-driver :as drv]
+        [treajure.test.treajure-driver])
+  (:require [treajure.test.rest-driver.rest-driver :as drv]
             [clojure.contrib.json :as json]))
 
 (def base-url (get (System/getenv) "BASE_URL" "http://localhost:8080"))
 
 ;;;; TESTS - NB these currently assume mongo to be EMPTY before you start
 
-(facts "cljprj acceptance tests"
+(facts "treajure acceptance tests"
 
   (fact "security token is available"
     (when (nil? (System/getenv "TREAJURE_TOKEN"))

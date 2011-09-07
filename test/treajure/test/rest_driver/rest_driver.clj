@@ -1,4 +1,4 @@
-(ns cljprj.test.rest-driver.rest-driver
+(ns treajure.test.rest-driver.rest-driver
   (:import com.github.restdriver.serverdriver.RestServerDriver)
   (:import com.github.restdriver.serverdriver.http.Header))
 

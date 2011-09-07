@@ -1,4 +1,4 @@
-(defproject cljprj "1.0.0-SNAPSHOT"
+(defproject treajure "1.0.0-SNAPSHOT"
   :description "treajure - a clojure library service"
   :dependencies [[org.clojure/clojure "1.2.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
@@ -13,5 +13,5 @@
                      [midje "1.2.0"]]
   :resources-path "resources"
 
-  :ring {:handler cljprj.web/app})
+  :ring {:handler treajure.web/app})
 

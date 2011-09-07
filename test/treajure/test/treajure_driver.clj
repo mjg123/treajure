@@ -1,5 +1,5 @@
-(ns cljprj.test.cljprj-driver
-  (:require [cljprj.test.rest-driver.rest-driver :as drv]
+(ns treajure.test.treajure-driver
+  (:require [treajure.test.rest-driver.rest-driver :as drv]
             [clojure.contrib.json :as json]))
 
 (def ^{:private true
@@ -22,8 +22,8 @@
   "Creates a new project for upload"
   [id]
   (let [new-project {:name (str "Test project " id)
-                     :group-id (str "cljprj-test-group-id-" id)
-                     :artifact-id (str "cljprj-test-artifact-id-" id)}]
+                     :group-id (str "treajure-test-group-id-" id)
+                     :artifact-id (str "treajure-test-artifact-id-" id)}]
     (clear-project new-project)
     (swap! used-projects conj new-project)
     new-project))

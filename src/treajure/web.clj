@@ -1,12 +1,12 @@
-(ns cljprj.web
+(ns treajure.web
   (:use ring.adapter.jetty)
   (:use ring.middleware.stacktrace)
-  (:require [cljprj.rest :as rest]
+  (:require [treajure.rest :as rest]
             [compojure.handler :as handler]))
 
 (def app
   (->
-    (handler/site rest/cljprj-routes)
+    (handler/site rest/treajure-routes)
     (wrap-stacktrace)))
 
 (defn -main []
