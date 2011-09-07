@@ -231,13 +231,13 @@
 
   (fact "search results are limited"
         (clear-all-used-projects!)
-        (let [projects (vec (map #(assoc (make-project %) :tags ["limit-tag"]) (range 0 6)))]
+        (let [projects (vec (map #(assoc (make-project %) :tags ["limit-tag"]) (range 0 11)))]
           (doseq [prj projects] (add-project-clj prj))
 
           (let [resp (drv/GET "/api/projects?tag=limit-tag" accept-clj)
                 body (read-string (resp :body))]
-            (count (body :results)) => 5
-            (doseq [n (range 1 6)]
-              (get-in body [:results (- n 1) :name]) => (:name (nth projects (- 6 n)))))))
+            (count (body :results)) => 10
+            (doseq [n (range 1 11)]
+              (get-in body [:results (- n 1) :name]) => (:name (nth projects (- 11 n)))))))
 
   (clear-all-used-projects!))

@@ -59,4 +59,4 @@
                    (fetch :projects
                           :where where-clause
                           :sort {:$natural -1}
-                          :limit 5)))))
+                          :limit 10)))))
