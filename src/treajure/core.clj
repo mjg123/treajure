@@ -1,5 +1,5 @@
 (ns treajure.core
-  (:use [clojure.contrib.string :only [trim, lower-case]]
+  (:use [clojure.contrib.string :only [trim, lower-case, blank?]]
         [treajure.either]
         [clojure.set :only [difference]])
   (:require [treajure.persistence :as db]))
@@ -75,7 +75,7 @@
         art (:artifact-id prj)
         ver (:version prj)
         name (if (= grp art) grp (str grp "/" art))]
-    (assoc prj :lein-dep (str name " " ver))))
+    (assoc prj :lein-dep (if (blank? ver) name (str name " " ver)))))
 
 (defn get-project
   "retrieves a single project"

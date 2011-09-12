@@ -74,9 +74,9 @@
 (facts "Facts about dependencies"
        (def resp {:group-id "group" :artifact-id "artifact" :version "1.2.3"})
        (def repeat-group-resp {:group-id "group" :artifact-id "group" :version "1.2.3"})
+       (def no-version-resp {:group-id "group" :artifact-id "artifact"})
 
        (fact "group/artifact version"
-
              (:body (get-project "group" "artifact")) => (contains {:lein-dep "group/artifact 1.2.3"})
              (provided
               (db/get-project "group" "artifact") => resp))
@@ -85,4 +85,9 @@
              (:body (get-project "group" "group")) => (contains {:lein-dep "group 1.2.3"})
              (provided
               (db/get-project "group" "group") => repeat-group-resp))
+
+       (fact "group/artifact"
+             (:body (get-project "group" "artifact")) => (contains {:lein-dep "group/artifact"})
+             (provided
+              (db/get-project "group" "artifact") => no-version-resp))
        )
