@@ -71,7 +71,10 @@
 
 (defn create-deps [prj]
   "create the lein-deps property for the project"
-  (assoc prj :lein-dep (str (:group-id prj) "/" (:artifact-id prj) " " (:version prj))))
+  (let [grp (:group-id prj)
+        art (:artifact-id prj)
+        ver (:version prj)]
+    (assoc prj :lein-dep (if (= grp art) (str grp " " ver) (str grp "/" art " " ver)))))
 
 (defn get-project
   "retrieves a single project"
