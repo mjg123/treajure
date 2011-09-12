@@ -98,6 +98,7 @@
     (set-html "show-group-id" (prj :group-id))
     (set-html "show-artifact-id" (prj :artifact-id))
     (set-html "show-version" (prj :version))
+    (set-html "show-lein-dep" (str ";; {:lein-dep \"" (prj :lein-dep) "\" }"))
     (set-html "show-author" (prj :author))
     (set-html "show-homepage" (linkify (prj :homepage)))
     (set-html "show-source-url" (linkify (prj :source-url)))
