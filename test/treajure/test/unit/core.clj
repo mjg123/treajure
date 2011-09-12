@@ -89,5 +89,4 @@
        (fact "group/artifact"
              (:body (get-project "group" "artifact")) => (contains {:lein-dep "group/artifact"})
              (provided
-              (db/get-project "group" "artifact") => no-version-resp))
-       )
+              (db/get-project "group" "artifact") => no-version-resp)))
