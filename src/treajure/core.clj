@@ -69,12 +69,16 @@
 
     (make-error 400 (str "uploaded project must have at least #{ :name :group-id :artifact-id }, you were missing" (missing-fields prj)))))
 
+(defn create-deps [prj]
+  "create the lein-deps property for the project"
+  (assoc prj :lein-dep (str (:group-id prj) "/" (:artifact-id prj) " " (:version prj))))
+
 (defn get-project
   "retrieves a single project"
   [gid aid]
   (let [result (db/get-project gid aid)]
     (if result
-      {:body result}
+      {:body (create-deps result)}
       no-such-project)))
 
 (defn rm-project

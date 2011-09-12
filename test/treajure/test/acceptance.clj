@@ -168,12 +168,13 @@
     (let [project (assoc (make-full-project "five") :no-good-extra "WHATEVERS")
           {upload-status :status {new-location :location} :headers} (add-project-clj project)
           {get-status :status body-str :body} (drv/GET new-location accept-clj)
-          body (read-string body-str)]
+          body (read-string body-str)
+          expected-keys (keys (assoc (make-full-project "five") :lein-dep "dependency"))]
 
       upload-status => 201
       get-status => 200
 
-      (keys body) => (in-any-order (keys (make-full-project "five")))))
+      (keys body) => (in-any-order expected-keys)))
 
   (fact "list-project filtering error cases"
     ((drv/GET "/api/projects?name=foo&name=bar") :status) => 400)

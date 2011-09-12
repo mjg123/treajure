@@ -1,6 +1,6 @@
  (ns treajure.test.unit.core
   (:use [midje.sweet]
-        [treajure.core :only [valid-project? clean-project missing-fields add-project]])
+        [treajure.core :only [valid-project? clean-project missing-fields add-project get-project]])
   (:require [treajure.persistence :as db]))
 
 (def min-prj {:name "name" :group-id "gid" :artifact-id "aid"})
@@ -70,3 +70,16 @@
              (add-project (assoc min-prj :tags ["TAG"])) => (contains {:status 201})
              (provided
               (db/add-project (checker [actual] (= (actual :tags) ["tag"]))) => valid-response)))
+
+(facts "Facts about dependencies"
+       (def resp {:group-id "group" :artifact-id "artifact" :version "1.2.3"})
+
+       (fact "group/artifact version"
+
+             (:body (get-project "group" "artifact")) => (contains {:lein-dep "group/artifact 1.2.3"})
+             (provided
+              (db/get-project "group" "artifact") => resp)
+
+             )
+       
+       )
