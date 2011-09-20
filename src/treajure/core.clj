@@ -88,7 +88,6 @@
 (defn rm-project
   "removes a project from the service"
   [gid aid]
-
   (let [result (db/rm-project gid aid)]
     (if result
       {:status 204 :body nil}
