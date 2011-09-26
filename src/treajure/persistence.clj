@@ -35,7 +35,9 @@
     (left "Project already exists")))
 
 (defn rm-project [gid aid]
-  (destroy! :projects {:coords-idx (coords gid aid)}))
+  (let [prj (get-project gid aid)]
+    (destroy! :projects {:coords-idx (coords gid aid)})
+    (insert! :deleted {:coords-idx (coords prj) :project prj})))
 
 (defn- assoc-name-query [where-clause name]
   (cond
