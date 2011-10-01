@@ -16,9 +16,12 @@
   "Checks if the project contains the minimal amount of data to be valid"
   [prj-data]
   (and
-    (map? prj-data)
-    (every? #(contains? prj-data %) required-fields)
-    (every? #(not= "" (trim (prj-data %))) required-fields)))
+   (map? prj-data)
+   (every? #(or
+	     (= (first %) :tags)
+	     (= String (class (second %)))) prj-data)
+   (every? #(contains? prj-data %) required-fields)
+   (every? #(not= "" (trim (prj-data %))) required-fields)))
 
 (defn fields-with-values
   "Returns the keys of the fields that don't have values"

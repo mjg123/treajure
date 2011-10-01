@@ -32,7 +32,10 @@
   (fact "the 3 core keys must each have more than just whitespace"
     (valid-project? (assoc min-prj :name " ")) => false
     (valid-project? (assoc min-prj :group-id "\t")) => false
-    (valid-project? (assoc min-prj :artifact-id "  \t   ")) => false))
+    (valid-project? (assoc min-prj :artifact-id "  \t   ")) => false)
+
+  (fact "All properties except tags must be strings"
+	(valid-project? (assoc min-prj :other-field {:map "map"})) => false))
 
 (facts "Facts about missing fields"
   (fact "when one field is present the remaining two are missing"
