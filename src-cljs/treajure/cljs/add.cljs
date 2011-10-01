@@ -198,7 +198,6 @@
     (log (str "Searching with " search-url))
     (xhr/send search-url show-results-callback "GET" nil ajacs-headers)))
 
-
 (defn search-if-enter [e]
   (when (= 13 (.keyCode e)) (do-search)))
 
