@@ -12,14 +12,21 @@
 
 (def no-such-project (make-error 404 "No such project"))
 
+(defn valid-project-types?
+  [prj-data]
+  "Check if the project types are correct"
+  (letfn [(valid? [x] (if (= (first x)
+			     :tags)
+			(vector? (second x))
+			(= String (class (second x)))))]
+    (every? valid? prj-data)))
+
 (defn valid-project?
   "Checks if the project contains the minimal amount of data to be valid"
   [prj-data]
   (and
    (map? prj-data)
-   (every? #(or
-	     (= (first %) :tags)
-	     (= String (class (second %)))) prj-data)
+   (valid-project-types? prj-data)
    (every? #(contains? prj-data %) required-fields)
    (every? #(not= "" (trim (prj-data %))) required-fields)))
 

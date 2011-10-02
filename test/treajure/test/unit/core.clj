@@ -35,7 +35,8 @@
     (valid-project? (assoc min-prj :artifact-id "  \t   ")) => false)
 
   (fact "All properties except tags must be strings"
-	(valid-project? (assoc min-prj :other-field {:map "map"})) => false))
+	(valid-project? (assoc min-prj :other-field {:map "map"})) => false
+	(valid-project? (assoc min-prj :tags {:map "map"})) => false))
 
 (facts "Facts about missing fields"
   (fact "when one field is present the remaining two are missing"
