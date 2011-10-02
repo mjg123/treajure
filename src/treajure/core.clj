@@ -15,10 +15,9 @@
 (defn valid-project-types?
   [prj-data]
   "Check if the project types are correct"
-  (letfn [(valid? [x] (if (= (first x)
-			     :tags)
-			(vector? (second x))
-			(= String (class (second x)))))]
+  (letfn [(valid? [[x y]] (if (= x :tags)
+			(vector? y)
+			(= String (class y))))]
     (every? valid? prj-data)))
 
 (defn valid-project?
