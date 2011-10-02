@@ -2,7 +2,7 @@
   (:use [midje.sweet]
         [treajure.test.treajure-driver])
   (:require [treajure.test.rest-driver.rest-driver :as drv]
-            [clojure.contrib.json :as json]))
+            [clojure.data.json :as json]))
 
 (def base-url (get (System/getenv) "BASE_URL" "http://localhost:8080"))
 

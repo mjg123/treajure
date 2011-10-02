@@ -1,6 +1,6 @@
 (ns treajure.test.treajure-driver
   (:require [treajure.test.rest-driver.rest-driver :as drv]
-            [clojure.contrib.json :as json]))
+            [clojure.data.json :as json]))
 
 (def ^{:private true
        :doc "Store which projects have been created to we can remove them later"}

@@ -1,6 +1,6 @@
 (ns treajure.rest-lib
-  (:use [clojure.contrib.string :only [split]])
-  (:require [clojure.contrib.json :as json]))
+  (:use [clojure.string :only [split]])
+  (:require [clojure.data.json :as json]))
 
 ;; Various REST helpful stuffs
 

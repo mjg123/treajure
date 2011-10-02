@@ -1,5 +1,5 @@
 (ns treajure.core
-  (:use [clojure.contrib.string :only [trim, lower-case, blank?]]
+  (:use [clojure.string :only [trim, lower-case, blank?]]
         [treajure.either]
         [clojure.set :only [difference]])
   (:require [treajure.persistence :as db]))
