@@ -55,14 +55,14 @@
 
 (defn make-location-url
   "Makes the URL for a single project"
-  [prj]
-  (str "/api/projects/" (prj :group-id) "/" (prj :artifact-id)))
+  [{group :group-id artifact :artifact-id}]
+  (str "/api/projects/" group "/" artifact))
 
 (defn lowercase-tags
   "Make the tags in the project lower case"
-  [prj]
-  (if (seq (prj :tags))
-    (assoc prj :tags (map lower-case (prj :tags)))
+  [{tags :tags :as prj}]
+  (if (seq tags)
+    (assoc prj :tags (map lower-case tags))
     prj))
 
 (defn add-project [prj]
